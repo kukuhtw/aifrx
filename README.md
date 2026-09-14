@@ -344,6 +344,7 @@ Current tests cover credential encryption, safe demo risk input, live-account re
 - [MetaTrader 5, the broker, and this application: how they relate](docs/mt5-and-broker-relationship.md)
 - [Telegram command reference](docs/telegram-command-reference.md)
 - [Telegram user guide](docs/telegram-user-guide.md)
+- [Can Telegram users tell if they're on a demo or live account?](docs/telegram-demo-vs-live.md)
 - [User journey, application flow, database flow, and ERD](docs/user-journey-and-data-flow.md)
 - [Business requirements document](docs/brd.md)
 - [Product requirements document](docs/prd.md)
