@@ -42,6 +42,8 @@ The application must never:
 - Make subscription payment sufficient to enable live trading
 - Describe subscription fees as an investment
 
+For a user-facing explanation of how these fees differ from MT5, broker charges, and trading capital, see [Platform Subscription Fees vs. MT5 and Broker Costs](subscription-fees-vs-mt5-and-broker-costs.md).
+
 ## 3. Recommended Pricing Model
 
 The recommended launch model is a **fixed SaaS subscription** with monthly and annual billing. It is easier for users to understand and easier to audit than per-trade charges or performance fees.
