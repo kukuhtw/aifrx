@@ -341,6 +341,7 @@ Current tests cover credential encryption, safe demo risk input, live-account re
 
 - [Product overview](docs/product-overview.md)
 - [Application user guide and safety FAQ](docs/how-to-use-the-application.md)
+- [MetaTrader 5 and the broker: what's the difference?](docs/mt5-and-broker-relationship.md)
 - [Telegram command reference](docs/telegram-command-reference.md)
 - [Telegram user guide](docs/telegram-user-guide.md)
 - [User journey, application flow, database flow, and ERD](docs/user-journey-and-data-flow.md)
