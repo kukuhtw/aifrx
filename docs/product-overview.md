@@ -210,7 +210,7 @@ sequenceDiagram
     AI-->>A: Structured analysis
     A-->>U: Signal, reasoning, and risk notes
     U->>A: Configure BUY intent
-    A-->>U: Final review; no order placed yet
+    A-->>U: Final review - no order placed yet
     U->>A: Explicitly confirm
     A->>A: Validate risk, permissions, and slippage
     A->>M: Submit confirmed instruction
@@ -318,4 +318,3 @@ AI Forex Trading Assistant is designed to make forex analysis and MT5 execution 
 It addresses the gap between untrusted AI analysis and sensitive broker execution by introducing explicit human confirmation, independent backend validation, account isolation, risk controls, live-trading gates, idempotency, and an audit trail.
 
 Its purpose is not to promise profit. Its purpose is to help users make and execute their own decisions through a safer, clearer, and verifiable workflow.
-

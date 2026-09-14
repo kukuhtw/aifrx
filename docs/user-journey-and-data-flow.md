@@ -57,7 +57,7 @@ flowchart TD
     I --> J[Store mt5_accounts record as READ_ONLY and unverified]
     J --> K[Verify account through private MT5 bridge]
     K --> L{Verification successful?}
-    L -- No --> M[Show safe error; no credentials exposed]
+    L -- No --> M[Show safe error - no credentials exposed]
     L -- Yes --> N[Mark account verified]
     N --> O[Show masked account summary]
     G --> P[Open main menu]
@@ -131,7 +131,7 @@ flowchart TD
     H --> I[Fetch latest MT5 quote]
     I --> J[Run ownership, permission, live-mode, risk, freshness, and slippage checks]
     J --> K{All checks pass?}
-    K -- No --> L[Reject safely; no order placed]
+    K -- No --> L[Reject safely - no order placed]
     K -- Yes --> M[Status: EXECUTING]
     M --> N[Send order to private MT5 bridge]
     N --> O{Broker result}

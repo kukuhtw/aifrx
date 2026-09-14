@@ -209,11 +209,11 @@ sequenceDiagram
     U->>A: Select BUY or SELL
     A-->>U: Request lot, SL, and TP
     U->>A: Configure proposed trade
-    A-->>U: Final review; no order placed
+    A-->>U: Final review - no order placed
     U->>A: Explicitly confirm
     A->>A: Recheck permissions, price, risk, and slippage
     alt Validation fails
-        A-->>U: Rejected; no order placed
+        A-->>U: Rejected - no order placed
     else Validation passes
         A->>M: Submit confirmed instruction
         M->>B: Send order
@@ -462,4 +462,3 @@ After execution:
 Forex and leveraged-product trading involves substantial risk and may result in loss of capital. Depending on the product, broker, and jurisdiction, losses may exceed the amount initially committed. AI-generated analysis may be incorrect, delayed, or unsuitable for your circumstances.
 
 This application provides technical decision support and user-confirmed execution. It does not provide a guarantee, personalized financial advice, or protection from market loss. Seek appropriately licensed independent advice if you do not understand the product, legal framework, tax consequences, or risks.
-
