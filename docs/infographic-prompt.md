@@ -70,21 +70,26 @@ Cover exactly five sections, in this order:
    provider, and that the risk controls described in the docs are
    actually implemented.
    MUST include, visually distinct (e.g. a bordered callout box), this
-   exact caveat: the repository currently has NO formal LICENSE file.
-   Being publicly viewable on GitHub is for transparency and learning
-   — it does NOT automatically grant anyone the right to copy, modify,
-   or commercially reuse the code. Do not use the unqualified phrase
-   "open source" without this caveat next to it; prefer "source-
-   available" or "publicly viewable."
+   exact caveat: the project is licensed under the PolyForm
+   Noncommercial License 1.0.0. That means anyone may view, study,
+   run, modify, and share the code freely for NONCOMMERCIAL purposes
+   (personal learning, academic research, security review and
+   auditing, nonprofit/government use, hobby projects) — but
+   COMMERCIAL use is not covered and requires a separate written
+   license from the copyright holder. Do not use the unqualified
+   phrase "open source" without this caveat next to it; prefer
+   "source-available, noncommercial license" or name the license
+   directly.
 
 5. CAN ANYONE USE THIS TO RUN AN AI FOREX TRADING BUSINESS?
    Answer in two distinct parts, not blended into one claim:
-   (a) As code, today: no, not automatically - with no LICENSE file,
-       there is no automatic legal right to fork, redistribute, or
-       commercialize this codebase; commercial use requires contacting
-       the project owner.
-   (b) Even with a license: still not "clone and launch" - running a
-       real AI-forex service requires financial-services/regulatory
+   (a) As code, today: no, not without separate permission - the
+       PolyForm Noncommercial License only covers noncommercial use;
+       operating a paid or monetized AI-forex service on this code is
+       commercial use and requires contacting the project owner for a
+       separate license.
+   (b) Even with a commercial license: still not "clone and launch" -
+       running a real AI-forex service requires financial-services/regulatory
        review appropriate to each jurisdiction, never holding user
        funds, production-grade multi-account isolation, and security
        and compliance sign-off before enabling any live (real-money)

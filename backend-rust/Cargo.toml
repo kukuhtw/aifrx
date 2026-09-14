@@ -3,6 +3,7 @@ name = "ai-forex-backend"
 version = "0.1.0"
 edition = "2021"
 default-run = "ai-forex-backend"
+license = "PolyForm-Noncommercial-1.0.0"
 
 [dependencies]
 aes-gcm = "0.10"

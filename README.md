@@ -377,6 +377,10 @@ Before live trading, complete the Telegram identity layer, account credential li
 
 Keep live trading disabled until every required control has been independently verified.
 
+## License
+
+Licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). The source is publicly viewable for transparency, learning, and security review, and is free to use, modify, and share for noncommercial purposes. Commercial use — including operating a paid or hosted AI-forex service built on this code — requires a separate written license from the copyright holder; contact [kukuhtw@gmail.com](mailto:kukuhtw@gmail.com).
+
 ## Author
 
 **Kukuh TW** - Creator and Lead Developer
