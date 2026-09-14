@@ -345,6 +345,7 @@ Current tests cover credential encryption, safe demo risk input, live-account re
 - [Telegram user guide](docs/telegram-user-guide.md)
 - [User journey, application flow, database flow, and ERD](docs/user-journey-and-data-flow.md)
 - [Business requirements document](docs/brd.md)
+- [Product requirements document](docs/prd.md)
 
 ### Architecture and engineering
 
