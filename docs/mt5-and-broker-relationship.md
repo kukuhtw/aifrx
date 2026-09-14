@@ -1,10 +1,10 @@
-# MetaTrader 5 and the Broker: What's the Difference, and How Do They Relate?
+# MetaTrader 5, the Broker, and This Application: How They Relate
 
 ## 1. Direct Answer
 
-**MetaTrader 5 (MT5) is trading software. A broker is a licensed financial company that holds your trading account and money.** MT5 is not a broker, does not hold funds, and does not decide who can open an account. A broker is not software — it is the business you actually open an account with, deposit money into, and trade against.
+**MetaTrader 5 (MT5) is trading software. A broker is a licensed financial company that holds your trading account and money. This application (AI Forex Trading Assistant) is neither of those — it is a third party that adds AI-assisted analysis and a human-confirmed workflow on top of your own MT5 connection to your own broker account.**
 
-They are two different things made by two different kinds of organizations, and this application depends on both, in different ways:
+Three different things, three different responsibilities:
 
 ```mermaid
 flowchart LR
@@ -20,11 +20,33 @@ flowchart LR
     U -->|installs and logs in through| SW
     SW -->|connects to| SRV
     SRV --> ACC
+    U -->|reviews analysis, confirms trades through| APP[This Application]
+    APP -->|confirmed instructions only, via MT5| SW
 ```
 
-This document explains what each party actually is, who is responsible for what, and where this application (AI Forex Trading Assistant) fits in relative to both.
+This document explains what each party actually is, who is responsible for what, and — since the three are easy to blur together — exactly how MT5, your broker, and this application relate to one another.
 
-## 2. What Is a Broker?
+## 2. The Three-Way Relationship at a Glance
+
+None of the three parties duplicates another's job. Each does exactly one thing, and the boundaries between them are deliberate:
+
+| Party | What it actually is | Its one job |
+|---|---|---|
+| **Your broker** | A licensed financial company | Holds your funds, provides prices, accepts/rejects/fills orders |
+| **MetaTrader 5** | Software made by MetaQuotes Software Corp. | Connects your device to your broker's trade server; displays data; carries instructions |
+| **This application** | An AI-assisted decision-support service | Analyzes the market, makes you review and explicitly confirm a trade, then passes a validated instruction through MT5 |
+
+Put as a single sentence: **your broker owns your money and executes trades; MT5 is the wire your instructions and data travel over; this application decides nothing on its own — it prepares, checks, and only forwards what you explicitly confirmed.**
+
+None of the three can do another's job:
+
+- MT5 cannot hold funds or accept you as a client — only a broker can.
+- Your broker cannot run without trading software — MT5 (or another platform) is how it exposes accounts to clients.
+- This application cannot place an order without MT5 as the transport, and cannot reach your money without your broker's own account — it only ever acts as your instructed intermediary, after your confirmation, never as custodian or counterparty.
+
+The rest of this document goes through each relationship — broker alone (§3–4), MT5 alone (§5), how MT5 and the broker relate (§6), and exactly how this application fits between them (§10) — in detail.
+
+## 3. What Is a Broker?
 
 A **broker** (sometimes called a brokerage firm, forex broker, or CFD provider, depending on jurisdiction and product) is a company that:
 
@@ -39,7 +61,7 @@ A **broker** (sometimes called a brokerage firm, forex broker, or CFD provider, 
 
 In short: **the broker is who you are actually doing business with.** Your trading capital, your profit, and your loss all happen inside your broker account — not inside MT5, and not inside this application.
 
-## 3. What Is MetaTrader 5?
+## 4. What Is MetaTrader 5?
 
 **MetaTrader 5** is trading platform software developed and owned by **MetaQuotes Software Corp.**, a software company — not a broker. MetaQuotes does not open trading accounts for the public and does not hold client funds. Its business is building the MT5 platform and licensing it to brokers who want to offer it to their clients.
 
@@ -52,7 +74,7 @@ MT5 has two halves:
 
 When you connect, your terminal talks to one specific broker's trade server — identified by the exact **server name** you're given (for example, something like `BrokerName-Live` or `BrokerName-Demo3`). That server name is not a technicality; it is literally which broker, and which of that broker's environments (demo or live), you are connecting to.
 
-## 4. How MT5 and the Broker Relate
+## 5. How MT5 and the Broker Relate
 
 Think of it like this analogy: **MetaTrader 5 is like a web browser; the broker is like the website you visit through it.** The browser (MT5) is the same software regardless of which broker you use it with. The broker is the actual business — with its own license, its own prices, its own servers, and its own terms — that the software connects you to.
 
@@ -66,22 +88,23 @@ Concretely:
 
 MT5 also offers its own generic demo servers (e.g., a `MetaQuotes-Demo` option) so someone can try the terminal software itself without first picking a broker. That is useful for learning the interface, but it is not a real broker account and is a separate thing from connecting to a specific broker's demo or live server.
 
-## 5. Who Owns / Controls What
+## 6. Who Owns / Controls What
 
-| Responsibility | MetaQuotes (MT5 platform) | Your broker |
-|---|---|---|
-| Builds and maintains the terminal/server software | Yes | No |
-| Licenses the platform to brokers | Yes | Licenses it, does not build it |
-| Opens your trading account | No | Yes |
-| Holds your deposited funds | No | Yes |
-| Sets your leverage, margin, and symbol rules | No | Yes |
-| Provides the prices you trade on | No | Yes |
-| Accepts, rejects, or fills your orders | No | Yes |
-| Charges spread, commission, or swap | No | Yes |
-| Is regulated for your specific account (where applicable) | Not applicable | Yes, if properly licensed |
-| Processes your deposits and withdrawals | No | Yes |
+| Responsibility | MetaQuotes (MT5 platform) | Your broker | This application |
+|---|---|---|---|
+| Builds and maintains the terminal/server software | Yes | No | No |
+| Licenses the platform to brokers | Yes | Licenses it, does not build it | No |
+| Opens your trading account | No | Yes | No — connects to an account you already opened yourself |
+| Holds your deposited funds | No | Yes | No — never at any point |
+| Sets your leverage, margin, and symbol rules | No | Yes | No — reads and respects the broker's rules |
+| Provides the prices you trade on | No | Yes | No — reads the broker's prices through MT5, does not generate them |
+| Accepts, rejects, or fills your orders | No | Yes | No — the broker alone decides this; this application only submits what you confirmed |
+| Charges spread, commission, or swap | No | Yes | No — charges only its own separate subscription fee, if any |
+| Decides whether a trade happens | No | No (executes what's submitted) | No — **you** decide; this application enforces that only your explicit confirmation can trigger a submission |
+| Is regulated for your specific account (where applicable) | Not applicable | Yes, if properly licensed | Not applicable — it is not your broker or custodian |
+| Processes your deposits and withdrawals | No | Yes | No — never handles trading capital at all |
 
-## 6. Common Misconceptions
+## 7. Common Misconceptions
 
 **"The MT5 logo means the broker is regulated and safe."** No. MT5 is licensed to thousands of brokers worldwide, regulated and unregulated alike. Seeing the familiar MT5 interface tells you nothing about whether the specific company behind that server is legitimate, solvent, or licensed in your jurisdiction. This exact point is called out in [how-to-use-the-application.md §12](how-to-use-the-application.md#12-warning-signs-and-scam-prevention): *"Trading software does not prove that a broker is legitimate."*
 
@@ -89,13 +112,17 @@ MT5 also offers its own generic demo servers (e.g., a `MetaQuotes-Demo` option) 
 
 **"My MT5 password is like my app login — low risk to share."** No. Your MT5 password is trading-capable broker-account access. Sharing it is materially different from sharing a low-stakes app password — see [how-to-use-the-application.md §3.2](how-to-use-the-application.md#32-credential-rules).
 
-**"A demo account proves the broker is trustworthy."** No. Demo accounts use virtual money and test the trading experience, not the broker's real-money withdrawal process, fund segregation, or legal standing. Verify those separately, as described in §7 below.
+**"A demo account proves the broker is trustworthy."** No. Demo accounts use virtual money and test the trading experience, not the broker's real-money withdrawal process, fund segregation, or legal standing. Verify those separately, as described in §8 below.
 
 **"MT5 executed my trade, so MT5 is responsible for the result."** No. MT5 is the interface and messaging layer; the broker's trade server is what actually accepts, prices, and fills (or rejects) the order. Execution quality, requotes, slippage policy, and order handling are broker decisions, not MT5 decisions.
 
-## 7. How to Check Whether a Broker Is Legitimate
+**"This application is my broker, or manages my money."** No. It never opens an account for you, never holds a deposit, and never controls a withdrawal. Your account agreement and your funds are entirely with your broker — see [product-overview.md §7](product-overview.md#7-what-the-application-does-not-do).
 
-Because the broker — not MT5 — is who actually holds your money, verifying the broker is the step that matters most. Never rely on a brand name, search ad, social-media post, influencer, or Telegram group.
+**"Since it has 'AI,' this application can trade for me automatically."** No. AI output is analysis only. Every order requires your separate, explicit confirmation before anything is sent toward MT5 — see [§10](#10-step-by-step-how-an-order-actually-travels-through-all-three) below.
+
+## 8. How to Check Whether a Broker Is Legitimate
+
+Because the broker — not MT5, not this application — is who actually holds your money, verifying the broker is the step that matters most. Never rely on a brand name, search ad, social-media post, influencer, or Telegram group.
 
 - **Indonesia:** check Bappebti's official [Business Legality Check](https://ceklegalitas.bappebti.go.id/) and [Bappebti website](https://bappebti.go.id/).
 - **United States:** follow CFTC guidance to verify registration and disciplinary history — see the [CFTC forex advisory](https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/CustomerAdvisory_MustKnowForex.html).
@@ -104,9 +131,9 @@ Because the broker — not MT5 — is who actually holds your money, verifying t
 
 This full checklist, including credential-handling rules and how to open a demo account safely, is covered in [how-to-use-the-application.md §2](how-to-use-the-application.md#2-where-do-i-register-for-metatrader-5).
 
-## 8. Where This Application Fits Between MT5 and the Broker
+## 9. Where This Application Sits Relative to MT5 and the Broker
 
-AI Forex Trading Assistant is **neither MT5 nor a broker**. It is a third party that sits on top of your own MT5 connection to your own broker account, adding AI-assisted analysis and a controlled, human-confirmed workflow — without ever holding your funds or becoming your broker.
+As §2 summarized: this application is neither MT5 nor your broker. It is a third party that sits on top of your own MT5 connection to your own broker account, adding AI-assisted analysis and a controlled, human-confirmed workflow — without ever holding your funds or becoming your broker.
 
 ```mermaid
 flowchart LR
@@ -119,7 +146,7 @@ flowchart LR
     SRV --> BR
 ```
 
-Concretely, per account/order:
+## 10. Step-by-Step: How an Order Actually Travels Through All Three
 
 1. You open and fund your account **directly with the broker** — this application is never in that path (see [product-overview.md §7](product-overview.md#7-what-the-application-does-not-do)).
 2. You give the application your MT5 **login, password, and server name** so it can connect to your account through MT5, the same way any MT5-based tool would; the password is encrypted at rest and never sent to OpenAI (see [security.md](security.md)).
@@ -130,7 +157,7 @@ Concretely, per account/order:
 
 This three-layer separation — broker (funds and execution), MT5 (connectivity and terminal software), and this application (analysis and controlled workflow) — is intentional and is the same boundary described in [MT5 and the Rust–Python architecture](mt5-and-dual-tech-stack.md) and [product boundaries](product-overview.md#9-product-boundaries).
 
-## 9. Quick Reference
+## 11. Quick Reference
 
 | Question | Answer |
 |---|---|
@@ -139,10 +166,12 @@ This three-layer separation — broker (funds and execution), MT5 (connectivity 
 | Who provides the terminal software I install? | MetaQuotes (MT5), typically distributed via your broker's site. |
 | Does MT5 guarantee my broker is licensed or trustworthy? | No — verify the broker independently through the relevant regulator. |
 | Does this application hold my funds or act as my broker? | No — it only connects to your existing broker account through MT5, with your confirmation required for every trade. |
+| Can this application place a trade without MT5? | No — MT5 is the only path it has to your broker; there is no direct application-to-broker connection. |
+| Can this application place a trade without your confirmation? | No — AI output and configuration alone are never sufficient; explicit confirmation is required every time. |
 | If my order is rejected, whose rule caused it? | Almost always the broker's (margin, symbol status, filling rules) — MT5 and this application pass the request through and report the broker's result. |
 | Can I use this application with any broker? | Only brokers that offer an MT5 account, since the application connects specifically through the MT5 terminal and its Python integration. |
 
-## 10. Related Documentation
+## 12. Related Documentation
 
 - [MT5 and the Rust–Python architecture](mt5-and-dual-tech-stack.md) — how this application technically talks to MT5
 - [Application user guide and safety FAQ](how-to-use-the-application.md) — opening an account, verifying a broker, credential rules
