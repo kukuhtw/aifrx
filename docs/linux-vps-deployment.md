@@ -141,7 +141,33 @@ Rust remains the policy and security authority in every topology; only the narro
 | What's the supported way to get real MT5 data/execution while keeping most infrastructure on Linux? | Run the Rust backend, PostgreSQL, and admin dashboard on your Linux VPS; run the MT5 Bridge and MT5 terminal on a separate Windows host reachable only over a private, authenticated connection. |
 | Is there an unofficial all-Linux path? | Wine-based workarounds exist in the community but are unsupported, untested in this repository, and not recommended for real-money trading. |
 
-## 7. Related Documentation
+## 7. Frequently Asked Questions
+
+### Is there a third-party "MT5 Bridge URL" service I can just point `MT5_BRIDGE_URL` at, instead of hosting Option B myself?
+
+No. The MT5 Bridge in this repository is a small, purpose-built internal API for this project — it is not a standard industry protocol, so no external service happens to be compatible with it out of the box. Its entire surface is three routes:
+
+```text
+GET  /health
+GET  /accounts/{account_id}/quote/{symbol}
+POST /accounts/{account_id}/orders
+```
+
+authenticated with the `X-Internal-API-Key` header (`mt5-bridge/app/security.py`) and typed against project-specific Pydantic models (`OrderRequest`, `OrderResult`, `Quote` in `mt5-bridge/app/models.py`). There is not even an account-login endpoint yet — `mt5-bridge/app/sessions.py` only provides a per-account lock registry. For a third-party service to be a drop-in replacement, it would have to implement this exact contract, which is effectively unique to this codebase.
+
+### What people usually mean when they ask this is "can I avoid managing a Windows machine myself" — is there a service for that?
+
+That exists, but it is **hosting**, not an **API service**: many MT5 brokers rent Windows VPS instances (often free or discounted for active accounts) intended for hosting a terminal close to their trading servers. Generic cloud Windows VMs work the same way. Either option gives you a Windows machine — you still deploy this repository's own `mt5-bridge/` code onto it yourself, exactly as described in [Option B above](#42-option-b--hybrid-linux-vps--a-separate-windows-host-recommended-for-real-mt5). It removes the burden of *managing* Windows infrastructure, not the requirement to run this project's own bridge code on it.
+
+### What about the official MetaTrader Manager API?
+
+That is a real, official MetaQuotes API, but it is built for **brokers** to administer their own server-side accounts — it requires broker-issued manager credentials and is not a mechanism for an individual client to remotely automate their own single trading account. It is not a substitute for the terminal-based `MetaTrader5` Python package this project uses.
+
+### Should I trust a service that offers to bridge my MT5 account over the internet?
+
+Be very cautious. Handing your MT5 login and password to any bridge you do not control and cannot audit means that party can trade — and potentially drain risk limits — on your real account. This directly conflicts with the credential-handling principles already documented in [security.md](security.md) and [how-to-use-the-application.md §3.2](how-to-use-the-application.md#32-credential-rules). If real MT5 connectivity is needed, self-hosting the bridge on infrastructure you control (your own Windows VPS, or a broker-provided one) keeps credential handling inside the same trust boundary this project is designed around, rather than extending it to an unverified third party.
+
+## 8. Related Documentation
 
 - [MT5 and the Rust–Python architecture](mt5-and-dual-tech-stack.md) — why the stack is split this way
 - [MT5 deployment](mt5-deployment.md) — production worker/terminal isolation guidance
