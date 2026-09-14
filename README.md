@@ -29,6 +29,10 @@ Live orders require all three explicit gates: `TRADING_MODE=LIVE`, global `LIVE_
 
 See [platform subscription fees vs. MT5 and broker costs](docs/subscription-fees-vs-mt5-and-broker-costs.md), the [pricing, billing, and payment administration guide](docs/pricing-billing-and-payment-administration.md), [application user guide and safety FAQ](docs/how-to-use-the-application.md), [SaaS, administration, AI, market data, and API ownership guide](docs/saas-administration-ai-and-market-data.md), [product overview](docs/product-overview.md), [MT5 and the Rust–Python architecture](docs/mt5-and-dual-tech-stack.md), [user journey and data flow](docs/user-journey-and-data-flow.md), [API documentation](docs/api.md), [architecture](docs/architecture.md), [security](docs/security.md), and [risk controls](docs/risk-controls.md).
 
+## Admin dashboard
+
+A protected read-only operations dashboard is available at `/admin/`. Configure it with `ADMIN_USERNAME` and `ADMIN_PASSWORD_HASH_B64`; see the [admin dashboard guide](docs/admin-dashboard.md).
+
 ## Author
 
 **Kukuh TW** — Creator and lead developer

@@ -1,3 +1,4 @@
+mod admin;
 mod ai;
 mod config;
 mod crypto;
@@ -10,6 +11,8 @@ mod state;
 mod trading;
 
 use axum::{
+    middleware,
+    response::Redirect,
     routing::{get, post},
     Router,
 };
@@ -33,7 +36,17 @@ async fn main() -> anyhow::Result<()> {
         .await?;
     sqlx::migrate!("./migrations").run(&pool).await?;
     let state = Arc::new(AppState::new(config, pool)?);
+    let admin_routes = Router::new()
+        .route("/", get(admin::dashboard))
+        .route("/api/overview", get(admin::overview))
+        .route("/api/users", get(admin::users))
+        .route_layer(middleware::from_fn_with_state(
+            state.clone(),
+            admin::require_admin,
+        ));
     let app = Router::new()
+        .route("/admin", get(|| async { Redirect::permanent("/admin/") }))
+        .nest("/admin", admin_routes)
         .route("/health", get(routes::health))
         .route("/api/v1/analyses", post(routes::analyze))
         .route("/api/v1/trade-intents", post(routes::create_intent))

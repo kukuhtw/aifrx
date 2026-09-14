@@ -2,6 +2,7 @@
 name = "ai-forex-backend"
 version = "0.1.0"
 edition = "2021"
+default-run = "ai-forex-backend"
 
 [dependencies]
 aes-gcm = "0.10"
@@ -27,6 +28,9 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 
+[[bin]]
+name = "hash-admin-password"
+path = "src/bin/hash_admin_password.rs"
+
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }
-

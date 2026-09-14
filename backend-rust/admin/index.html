@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Forex Admin</title>
+  <style>
+    :root{--ink:#17211d;--muted:#66736d;--paper:#f4f5f0;--card:#fff;--line:#dfe4de;--green:#0e6b50;--mint:#c9f2df;--lime:#dff36b;--orange:#d9772c;--red:#b84135;--nav:#10251e;--shadow:0 14px 36px rgba(20,42,33,.08)}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.sidebar{position:sticky;top:0;height:100vh;background:var(--nav);color:#eaf5ee;padding:28px 20px;display:flex;flex-direction:column}.brand{display:flex;gap:11px;align-items:center;margin-bottom:40px}.mark{width:38px;height:38px;border-radius:12px;background:var(--lime);color:var(--nav);display:grid;place-items:center;font-weight:900;font-size:18px}.brand strong{display:block;font-size:15px;letter-spacing:.02em}.brand small{color:#9fbaaf}.nav-label{text-transform:uppercase;letter-spacing:.14em;color:#78968a;font-size:10px;font-weight:800;margin:10px 12px}.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;color:#aac0b7;text-decoration:none;border-radius:10px;margin:3px 0}.nav-item.active{background:#1b3b30;color:#fff}.nav-item:hover{background:#17342b;color:#fff}.nav-icon{font-size:16px;width:20px;text-align:center}.side-foot{margin-top:auto;padding:14px;border:1px solid #2d493f;border-radius:12px;color:#a7beb4}.side-foot b{display:block;color:#fff;margin-bottom:4px}.main{padding:28px 34px 48px;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}.eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--green);font-weight:800}.topbar h1{font-family:Georgia,serif;font-size:32px;line-height:1.1;margin:4px 0 0;font-weight:500}.actions{display:flex;align-items:center;gap:12px}.refresh{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;color:var(--ink)}.refresh:hover{border-color:var(--green)}.timestamp{color:var(--muted);font-size:12px}.status-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.health{display:flex;align-items:center;gap:7px;background:#fff;padding:7px 10px;border:1px solid var(--line);border-radius:99px;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:#99a39f}.dot.ok{background:#19a573;box-shadow:0 0 0 3px #d9f4e9}.dot.bad{background:var(--orange);box-shadow:0 0 0 3px #fbe8d9}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.metric{grid-column:span 3;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-height:128px}.metric.emphasis{background:var(--nav);color:#fff;border-color:var(--nav)}.metric .label{color:var(--muted);font-size:12px;font-weight:700}.metric.emphasis .label{color:#a9c0b6}.metric .value{font-family:Georgia,serif;font-size:31px;line-height:1.1;margin:11px 0 6px}.delta{color:var(--green);font-size:12px}.metric.emphasis .delta{color:var(--lime)}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)}.panel-head h2{font:500 20px Georgia,serif;margin:0}.panel-head p{margin:2px 0 0;color:var(--muted);font-size:12px}.billing{grid-column:span 7;margin-top:16px}.activity{grid-column:span 5;margin-top:16px}.billing-body{padding:20px}.bar-row{display:grid;grid-template-columns:110px 1fr 50px;align-items:center;gap:10px;margin:15px 0}.bar-label{color:var(--muted);font-size:12px}.bar-track{height:9px;background:#edf0ec;border-radius:99px;overflow:hidden}.bar-fill{height:100%;min-width:3px;border-radius:99px;background:var(--green)}.bar-fill.trial{background:#91b238}.bar-fill.past{background:var(--orange)}.bar-fill.pending{background:#acb6b1}.bar-value{text-align:right;font-weight:800}.revenue{margin-top:18px;padding:16px;border-radius:12px;background:#eef7f2;display:flex;align-items:center;justify-content:space-between}.revenue span{color:var(--muted);font-size:12px}.revenue strong{font:500 22px Georgia,serif;color:var(--green)}.activity-list{list-style:none;padding:8px 20px 16px;margin:0}.activity-list li{display:grid;grid-template-columns:9px 1fr auto;gap:10px;align-items:start;padding:11px 0;border-bottom:1px solid #edf0ed}.activity-list li:last-child{border:0}.event-dot{width:8px;height:8px;background:var(--mint);border:2px solid var(--green);border-radius:50%;margin-top:6px}.event-name{font-weight:750;font-size:12px}.event-user{font-size:11px;color:var(--muted)}.event-time{font-size:11px;color:var(--muted);white-space:nowrap}.users{grid-column:1/-1;margin-top:16px}.filters{display:flex;gap:8px}.filters input,.filters select{border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 10px;color:var(--ink);outline:none}.filters input:focus,.filters select:focus{border-color:var(--green);box-shadow:0 0 0 3px #e2f1eb}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:920px}th,td{text-align:left;padding:13px 18px;border-bottom:1px solid #edf0ed}th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:#fafbf9}tbody tr:hover{background:#fafcf9}.user{display:flex;gap:10px;align-items:center}.avatar{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--mint);color:var(--green);font-weight:900}.user b{display:block;font-size:12px}.user small{color:var(--muted)}.badge{display:inline-flex;padding:4px 8px;border-radius:99px;font-size:10px;font-weight:850;letter-spacing:.04em;background:#edf0ee;color:#52615b}.badge.active,.badge.paid{background:#d9f4e9;color:#08714d}.badge.trialing{background:#eff6c9;color:#63720e}.badge.past_due,.badge.failed{background:#fde5d6;color:#a44d14}.badge.pending_payment,.badge.pending{background:#eee8ff;color:#6244a5}.badge.suspended,.badge.cancelled,.badge.expired,.badge.unpaid{background:#f1e3e1;color:#8d3831}.empty{padding:40px;text-align:center;color:var(--muted)}.error{display:none;margin-bottom:16px;padding:12px 14px;border-radius:10px;background:#fae5e2;color:#8f3026;border:1px solid #efc9c3}.loading{opacity:.55;pointer-events:none}@media(max-width:1000px){.shell{grid-template-columns:78px 1fr}.sidebar{padding:22px 12px}.brand div:last-child,.nav-item span:last-child,.nav-label,.side-foot{display:none}.brand{justify-content:center}.nav-item{justify-content:center}.main{padding:24px 20px}.metric{grid-column:span 6}.billing,.activity{grid-column:1/-1}}@media(max-width:620px){.shell{display:block}.sidebar{position:static;height:auto;display:flex;flex-direction:row;padding:10px 14px;align-items:center}.brand{margin:0 8px 0 0}.nav-label,.side-foot{display:none}.sidebar nav{display:flex;overflow:auto}.nav-item{margin:0;padding:10px}.main{padding:20px 14px}.topbar{align-items:flex-start;gap:12px}.topbar h1{font-size:26px}.actions{flex-direction:column;align-items:flex-end}.metric{grid-column:1/-1;min-height:105px}.panel-head{align-items:flex-start;gap:12px;flex-direction:column}.filters{width:100%}.filters input{width:100%}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="mark">AF</div><div><strong>AI Forex</strong><small>Control room</small></div></div>
+    <nav>
+      <div class="nav-label">Workspace</div>
+      <a class="nav-item active" href="#overview"><span class="nav-icon">◫</span><span>Overview</span></a>
+      <a class="nav-item" href="#users"><span class="nav-icon">◎</span><span>Users & billing</span></a>
+      <a class="nav-item" href="#activity"><span class="nav-icon">↗</span><span>Audit activity</span></a>
+    </nav>
+    <div class="side-foot"><b>Read-only console</b>No credentials or trade execution controls are exposed here.</div>
+  </aside>
+  <main class="main" id="overview">
+    <header class="topbar">
+      <div><div class="eyebrow">Operations dashboard</div><h1>Platform overview</h1></div>
+      <div class="actions"><span class="timestamp" id="timestamp">Loading…</span><button class="refresh" id="refresh" type="button">↻ Refresh</button></div>
+    </header>
+    <div class="error" id="error" role="alert"></div>
+    <section class="status-strip" aria-label="System status">
+      <div class="health"><i class="dot" id="db-dot"></i>Database <b id="db-status">Checking</b></div>
+      <div class="health"><i class="dot" id="mt5-dot"></i>MT5 Bridge <b id="mt5-status">Checking</b></div>
+      <div class="health"><i class="dot" id="live-dot"></i>Live trading <b id="live-status">Checking</b></div>
+    </section>
+    <section class="grid" id="dashboard">
+      <article class="metric emphasis"><div class="label">Total users</div><div class="value" id="total-users">—</div><div class="delta" id="active-users">— active</div></article>
+      <article class="metric"><div class="label">MT5 accounts</div><div class="value" id="accounts">—</div><div class="delta" id="verified-accounts">— verified</div></article>
+      <article class="metric"><div class="label">Analyses today</div><div class="value" id="analyses">—</div><div class="delta">AI requests recorded</div></article>
+      <article class="metric"><div class="label">Trade intents today</div><div class="value" id="intents">—</div><div class="delta" id="orders-today">— executed · — failed</div></article>
+
+      <article class="panel billing">
+        <div class="panel-head"><div><h2>Subscription health</h2><p>Current customer billing state</p></div><span class="badge active">Live data</span></div>
+        <div class="billing-body">
+          <div class="bar-row"><div class="bar-label">Active paid</div><div class="bar-track"><div class="bar-fill" id="bar-active"></div></div><div class="bar-value" id="sub-active">—</div></div>
+          <div class="bar-row"><div class="bar-label">Trial</div><div class="bar-track"><div class="bar-fill trial" id="bar-trial"></div></div><div class="bar-value" id="sub-trial">—</div></div>
+          <div class="bar-row"><div class="bar-label">Past due</div><div class="bar-track"><div class="bar-fill past" id="bar-past"></div></div><div class="bar-value" id="sub-past">—</div></div>
+          <div class="bar-row"><div class="bar-label">Pending</div><div class="bar-track"><div class="bar-fill pending" id="bar-pending"></div></div><div class="bar-value" id="sub-pending">—</div></div>
+          <div class="revenue"><span>Paid invoices this month</span><strong id="revenue">IDR —</strong></div>
+        </div>
+      </article>
+
+      <article class="panel activity" id="activity">
+        <div class="panel-head"><div><h2>Recent audit</h2><p>Latest security and trading events</p></div></div>
+        <ul class="activity-list" id="activity-list"><li class="empty">Loading activity…</li></ul>
+      </article>
+
+      <article class="panel users" id="users">
+        <div class="panel-head">
+          <div><h2>Users & billing</h2><p>Account state and latest verified subscription status</p></div>
+          <form class="filters" id="filters"><input id="search" type="search" placeholder="Search user…" aria-label="Search users"><select id="subscription" aria-label="Subscription status"><option value="">All subscriptions</option><option>ACTIVE</option><option>TRIALING</option><option>PENDING_PAYMENT</option><option>PAST_DUE</option><option>SUSPENDED</option><option>CANCELLED</option><option>EXPIRED</option><option>UNPAID</option></select></form>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>User</th><th>Status</th><th>Plan</th><th>Subscription</th><th>Latest invoice</th><th>MT5 accounts</th><th>Trading</th><th>Paid through</th></tr></thead><tbody id="users-body"><tr><td colspan="8" class="empty">Loading users…</td></tr></tbody></table>
+        </div>
+      </article>
+    </section>
+  </main>
+</div>
+<script>
+  const $ = id => document.getElementById(id);
+  const number = value => new Intl.NumberFormat('en-US').format(value || 0);
+  const money = value => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(value || 0);
+  const date = value => value ? new Intl.DateTimeFormat('en-GB',{dateStyle:'medium'}).format(new Date(value)) : '—';
+  const time = value => value ? new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value)) : '—';
+  const label = value => String(value || 'UNKNOWN').replaceAll('_',' ');
+  const badge = value => { const span=document.createElement('span'); span.className='badge '+String(value||'unpaid').toLowerCase(); span.textContent=label(value||'UNPAID'); return span; };
+  const cell = (row, value) => { const td=document.createElement('td'); if(value instanceof Node) td.append(value); else td.textContent=value; row.append(td); };
+  function health(id,status){$(id+'-status').textContent=status;$(id+'-dot').className='dot '+(status==='ok'||status==='disabled'?'ok':'bad');}
+  function showError(error){$('error').style.display='block';$('error').textContent=error instanceof Error?error.message:String(error);}
+  async function json(path){const response=await fetch(path,{headers:{Accept:'application/json'},cache:'no-store'});if(!response.ok)throw new Error('Dashboard request failed ('+response.status+')');return response.json();}
+  async function loadOverview(){
+    const d=await json('/admin/api/overview');
+    $('total-users').textContent=number(d.total_users); $('active-users').textContent=number(d.active_users)+' active';
+    $('accounts').textContent=number(d.total_accounts); $('verified-accounts').textContent=number(d.verified_accounts)+' verified';
+    $('analyses').textContent=number(d.analyses_today); $('intents').textContent=number(d.trade_intents_today);
+    $('orders-today').textContent=number(d.executed_today)+' executed · '+number(d.failed_today)+' failed';
+    $('sub-active').textContent=number(d.active_subscriptions);$('sub-trial').textContent=number(d.trial_subscriptions);$('sub-past').textContent=number(d.past_due_subscriptions);$('sub-pending').textContent=number(d.pending_subscriptions);
+    const maximum=Math.max(1,d.active_subscriptions,d.trial_subscriptions,d.past_due_subscriptions,d.pending_subscriptions);
+    [['active',d.active_subscriptions],['trial',d.trial_subscriptions],['past',d.past_due_subscriptions],['pending',d.pending_subscriptions]].forEach(([id,value])=>$('bar-'+id).style.width=(value/maximum*100)+'%');
+    $('revenue').textContent=money(d.paid_revenue_month_idr);$('timestamp').textContent='Updated '+time(d.generated_at);
+    health('db',d.database_status);health('mt5',d.mt5_bridge_status);health('live',d.live_trading_enabled?'enabled':'disabled');
+    const list=$('activity-list');list.replaceChildren();
+    if(!d.recent_audit.length){const li=document.createElement('li');li.className='empty';li.textContent='No audit events yet.';list.append(li);}
+    d.recent_audit.forEach(item=>{const li=document.createElement('li');const dot=document.createElement('i');dot.className='event-dot';const copy=document.createElement('div');const name=document.createElement('div');name.className='event-name';name.textContent=label(item.event_type);const user=document.createElement('div');user.className='event-user';user.textContent=item.user_label+' · '+label(item.entity_type);copy.append(name,user);const when=document.createElement('span');when.className='event-time';when.textContent=time(item.created_at);li.append(dot,copy,when);list.append(li);});
+  }
+  async function loadUsers(){
+    const params=new URLSearchParams({search:$('search').value,subscription:$('subscription').value,limit:'100'});
+    const d=await json('/admin/api/users?'+params);const body=$('users-body');body.replaceChildren();
+    if(!d.items.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=8;td.className='empty';td.textContent='No users match this filter.';tr.append(td);body.append(tr);return;}
+    d.items.forEach(item=>{const tr=document.createElement('tr');const identity=document.createElement('div');identity.className='user';const avatar=document.createElement('span');avatar.className='avatar';avatar.textContent=(item.first_name||item.telegram_username||'U').slice(0,1).toUpperCase();const copy=document.createElement('div');const name=document.createElement('b');name.textContent=item.first_name||item.telegram_username||'Telegram user';const detail=document.createElement('small');detail.textContent=(item.telegram_username?'@'+item.telegram_username+' · ':'')+item.telegram_user_id;copy.append(name,detail);identity.append(avatar,copy);cell(tr,identity);cell(tr,badge(item.user_status));cell(tr,item.plan_name||'No plan');cell(tr,badge(item.subscription_status));cell(tr,item.latest_invoice_status?badge(item.latest_invoice_status):'—');cell(tr,number(item.verified_account_count)+' / '+number(item.account_count)+' verified');cell(tr,badge(item.trading_enabled?'ACTIVE':'DISABLED'));cell(tr,date(item.current_period_end));body.append(tr);});
+  }
+  async function load(){document.body.classList.add('loading');$('error').style.display='none';try{await Promise.all([loadOverview(),loadUsers()]);}catch(error){showError(error);}finally{document.body.classList.remove('loading');}}
+  let timer;$('filters').addEventListener('submit',event=>event.preventDefault());$('search').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(loadUsers,250)});$('subscription').addEventListener('change',loadUsers);$('refresh').addEventListener('click',load);load();
+</script>
+</body>
+</html>

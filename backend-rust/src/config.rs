@@ -12,6 +12,8 @@ pub struct Config {
     pub trading_mode: TradingMode,
     pub live_trading_enabled: bool,
     pub market_data_max_age_seconds: i64,
+    pub admin_username: String,
+    pub admin_password_hash: Option<String>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -53,6 +55,16 @@ impl Config {
             trading_mode: mode,
             live_trading_enabled: live,
             market_data_max_age_seconds: env("MARKET_DATA_MAX_AGE_SECONDS", "30").parse()?,
+            admin_username: env("ADMIN_USERNAME", "admin"),
+            admin_password_hash: std::env::var("ADMIN_PASSWORD_HASH_B64")
+                .ok()
+                .filter(|v| !v.is_empty())
+                .map(|value| STANDARD.decode(value))
+                .transpose()
+                .context("ADMIN_PASSWORD_HASH_B64 must be valid base64")?
+                .map(String::from_utf8)
+                .transpose()
+                .context("ADMIN_PASSWORD_HASH_B64 must contain a UTF-8 Argon2 hash")?,
         })
     }
 }
