@@ -27,7 +27,7 @@ Live orders require all three explicit gates: `TRADING_MODE=LIVE`, global `LIVE_
 - `POST /api/v1/trade-intents/{id}/confirm`
 - `POST /api/v1/trading/stop`
 
-See [user journey and data flow](docs/user-journey-and-data-flow.md), [API documentation](docs/api.md), [architecture](docs/architecture.md), [security](docs/security.md), and [risk controls](docs/risk-controls.md).
+See the [product overview](docs/product-overview.md), [MT5 and the Rust–Python architecture](docs/mt5-and-dual-tech-stack.md), [user journey and data flow](docs/user-journey-and-data-flow.md), [API documentation](docs/api.md), [architecture](docs/architecture.md), [security](docs/security.md), and [risk controls](docs/risk-controls.md).
 
 ## Author
 
