@@ -353,6 +353,7 @@ Current tests cover credential encryption, safe demo risk input, live-account re
 - [MT5 and the Rust-Python architecture](docs/mt5-and-dual-tech-stack.md)
 - [MT5 deployment](docs/mt5-deployment.md)
 - [Can this run on a Linux VPS instead of Windows?](docs/linux-vps-deployment.md)
+- [Deploying the MT5 Bridge to a Windows VPS](docs/windows-vps-deployment.md)
 - [API documentation](docs/api.md)
 - [Risk controls](docs/risk-controls.md)
 

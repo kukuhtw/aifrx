@@ -105,6 +105,8 @@ Practical ways to obtain the Windows side:
 
 In every case, follow the per-account isolation guidance already documented: one terminal/worker per active account, request serialization, and no asynchronous account-switching inside one global MT5 session (see [MT5 and the dual tech stack §8](mt5-and-dual-tech-stack.md#8-multi-user-session-isolation)).
 
+For a concrete, step-by-step walkthrough of setting up the Windows side — provisioning the VPS, installing the terminal and Python dependencies, running the bridge as a persistent service, and locking down the network back to your Linux VPS — see [Deploying the MT5 Bridge to a Windows VPS](windows-vps-deployment.md).
+
 ### 4.3 Option C — Wine-based Linux workaround (unofficial, not implemented here)
 
 It is technically possible for enthusiasts to run the MT5 terminal under [Wine](https://www.winehq.org/) on Linux, and community projects (for example `mt5linux`, which runs a Windows-side Python interpreter inside Wine and exposes it to native Linux Python over RPC) build on that to avoid a second physical/virtual Windows machine.
@@ -157,7 +159,7 @@ authenticated with the `X-Internal-API-Key` header (`mt5-bridge/app/security.py`
 
 ### What people usually mean when they ask this is "can I avoid managing a Windows machine myself" — is there a service for that?
 
-That exists, but it is **hosting**, not an **API service**: many MT5 brokers rent Windows VPS instances (often free or discounted for active accounts) intended for hosting a terminal close to their trading servers. Generic cloud Windows VMs work the same way. Either option gives you a Windows machine — you still deploy this repository's own `mt5-bridge/` code onto it yourself, exactly as described in [Option B above](#42-option-b--hybrid-linux-vps--a-separate-windows-host-recommended-for-real-mt5). It removes the burden of *managing* Windows infrastructure, not the requirement to run this project's own bridge code on it.
+That exists, but it is **hosting**, not an **API service**: many MT5 brokers rent Windows VPS instances (often free or discounted for active accounts) intended for hosting a terminal close to their trading servers. Generic cloud Windows VMs work the same way. Either option gives you a Windows machine — you still deploy this repository's own `mt5-bridge/` code onto it yourself, exactly as described in [Option B above](#42-option-b--hybrid-linux-vps--a-separate-windows-host-recommended-for-real-mt5) and walked through step-by-step in [Deploying the MT5 Bridge to a Windows VPS](windows-vps-deployment.md). It removes the burden of *managing* Windows infrastructure, not the requirement to run this project's own bridge code on it.
 
 ### What about the official MetaTrader Manager API?
 
