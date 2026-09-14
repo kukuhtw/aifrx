@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: aiforex
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: aiforex
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U aiforex"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  mt5-bridge:
+    build:
+      context: .
+      dockerfile: mt5-bridge/Dockerfile
+    environment:
+      MT5_BRIDGE_API_KEY: ${MT5_BRIDGE_API_KEY}
+      MT5_MODE: ${MT5_MODE:-MOCK}
+    expose: ["8000"]
+  rust-backend:
+    build:
+      context: .
+      dockerfile: backend-rust/Dockerfile
+    env_file: .env
+    ports: ["8080:8080"]
+    depends_on:
+      postgres: {condition: service_healthy}
+      mt5-bridge: {condition: service_started}
+volumes:
+  postgres-data:
+
