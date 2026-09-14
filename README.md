@@ -342,6 +342,7 @@ Current tests cover credential encryption, safe demo risk input, live-account re
 - [Product overview](docs/product-overview.md)
 - [Application user guide and safety FAQ](docs/how-to-use-the-application.md)
 - [MetaTrader 5, the broker, and this application: how they relate](docs/mt5-and-broker-relationship.md)
+- [Infographic prompt: explaining AI Forex Trading Assistant](docs/infographic-prompt.md)
 - [Telegram command reference](docs/telegram-command-reference.md)
 - [Telegram user guide](docs/telegram-user-guide.md)
 - [Can Telegram users tell if they're on a demo or live account?](docs/telegram-demo-vs-live.md)
