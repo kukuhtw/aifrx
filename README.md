@@ -27,5 +27,13 @@ Live orders require all three explicit gates: `TRADING_MODE=LIVE`, global `LIVE_
 - `POST /api/v1/trade-intents/{id}/confirm`
 - `POST /api/v1/trading/stop`
 
-See [API documentation](docs/api.md), [architecture](docs/architecture.md), [security](docs/security.md), and [risk controls](docs/risk-controls.md).
+See [user journey and data flow](docs/user-journey-and-data-flow.md), [API documentation](docs/api.md), [architecture](docs/architecture.md), [security](docs/security.md), and [risk controls](docs/risk-controls.md).
 
+## Author
+
+**Kukuh TW** — Creator and lead developer
+
+- LinkedIn: [linkedin.com/in/kukuhtw](https://www.linkedin.com/in/kukuhtw)
+- Email: [kukuhtw@gmail.com](mailto:kukuhtw@gmail.com)
+
+Additional author information is available in [AUTHORS.md](AUTHORS.md).
