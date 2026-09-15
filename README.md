@@ -384,7 +384,7 @@ Licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). The source i
 
 ## Author
 
-**Kukuh TW** - Creator and Lead Developer
+**Kukuh TW** - Ideator
 
 - LinkedIn: [linkedin.com/in/kukuhtw](https://www.linkedin.com/in/kukuhtw)
 - Email: [kukuhtw@gmail.com](mailto:kukuhtw@gmail.com)
