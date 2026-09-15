@@ -349,6 +349,7 @@ Current tests cover credential encryption, safe demo risk input, live-account re
 - [User journey, application flow, database flow, and ERD](docs/user-journey-and-data-flow.md)
 - [Business requirements document](docs/brd.md)
 - [Product requirements document](docs/prd.md)
+- [Project status report: what's done, what isn't](docs/project-status-report.md)
 
 ### Architecture and engineering
 
