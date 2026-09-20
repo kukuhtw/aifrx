@@ -195,8 +195,10 @@ pub async fn users(
           COALESCE((SELECT bool_or(r.trading_enabled) FROM risk_profiles r WHERE r.user_id = u.id), false) AS trading_enabled,
           current_subscription.plan_name,
           COALESCE(current_subscription.status, 'UNPAID') AS subscription_status,
+          current_subscription.id AS current_subscription_id,
           current_subscription.current_period_end,
           latest_invoice.status AS latest_invoice_status,
+          latest_invoice.id AS latest_invoice_id,
           u.created_at
         FROM users u
         LEFT JOIN LATERAL (
@@ -208,7 +210,7 @@ pub async fn users(
           LIMIT 1
         ) current_subscription ON true
         LEFT JOIN LATERAL (
-          SELECT i.status::text AS status
+          SELECT i.id, i.status::text AS status
           FROM invoices i
           WHERE i.subscription_id = current_subscription.id
           ORDER BY i.created_at DESC
