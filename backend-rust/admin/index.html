@@ -6,11 +6,23 @@
   <title>AI Forex Admin</title>
   <style>
     :root{--ink:#17211d;--muted:#66736d;--paper:#f4f5f0;--card:#fff;--line:#dfe4de;--green:#0e6b50;--mint:#c9f2df;--lime:#dff36b;--orange:#d9772c;--red:#b84135;--nav:#10251e;--shadow:0 14px 36px rgba(20,42,33,.08)}
-    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.sidebar{position:sticky;top:0;height:100vh;background:var(--nav);color:#eaf5ee;padding:28px 20px;display:flex;flex-direction:column}.brand{display:flex;gap:11px;align-items:center;margin-bottom:40px}.mark{width:38px;height:38px;border-radius:12px;background:var(--lime);color:var(--nav);display:grid;place-items:center;font-weight:900;font-size:18px}.brand strong{display:block;font-size:15px;letter-spacing:.02em}.brand small{color:#9fbaaf}.nav-label{text-transform:uppercase;letter-spacing:.14em;color:#78968a;font-size:10px;font-weight:800;margin:10px 12px}.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;color:#aac0b7;text-decoration:none;border-radius:10px;margin:3px 0}.nav-item.active{background:#1b3b30;color:#fff}.nav-item:hover{background:#17342b;color:#fff}.nav-icon{font-size:16px;width:20px;text-align:center}.side-foot{margin-top:auto;padding:14px;border:1px solid #2d493f;border-radius:12px;color:#a7beb4}.side-foot b{display:block;color:#fff;margin-bottom:4px}.main{padding:28px 34px 48px;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}.eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--green);font-weight:800}.topbar h1{font-family:Georgia,serif;font-size:32px;line-height:1.1;margin:4px 0 0;font-weight:500}.actions{display:flex;align-items:center;gap:12px}.refresh{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;color:var(--ink)}.refresh:hover{border-color:var(--green)}.timestamp{color:var(--muted);font-size:12px}.status-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.health{display:flex;align-items:center;gap:7px;background:#fff;padding:7px 10px;border:1px solid var(--line);border-radius:99px;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:#99a39f}.dot.ok{background:#19a573;box-shadow:0 0 0 3px #d9f4e9}.dot.bad{background:var(--orange);box-shadow:0 0 0 3px #fbe8d9}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.metric{grid-column:span 3;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-height:128px}.metric.emphasis{background:var(--nav);color:#fff;border-color:var(--nav)}.metric .label{color:var(--muted);font-size:12px;font-weight:700}.metric.emphasis .label{color:#a9c0b6}.metric .value{font-family:Georgia,serif;font-size:31px;line-height:1.1;margin:11px 0 6px}.delta{color:var(--green);font-size:12px}.metric.emphasis .delta{color:var(--lime)}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)}.panel-head h2{font:500 20px Georgia,serif;margin:0}.panel-head p{margin:2px 0 0;color:var(--muted);font-size:12px}.billing{grid-column:span 7;margin-top:16px}.activity{grid-column:span 5;margin-top:16px}.billing-body{padding:20px}.bar-row{display:grid;grid-template-columns:110px 1fr 50px;align-items:center;gap:10px;margin:15px 0}.bar-label{color:var(--muted);font-size:12px}.bar-track{height:9px;background:#edf0ec;border-radius:99px;overflow:hidden}.bar-fill{height:100%;min-width:3px;border-radius:99px;background:var(--green)}.bar-fill.trial{background:#91b238}.bar-fill.past{background:var(--orange)}.bar-fill.pending{background:#acb6b1}.bar-value{text-align:right;font-weight:800}.revenue{margin-top:18px;padding:16px;border-radius:12px;background:#eef7f2;display:flex;align-items:center;justify-content:space-between}.revenue span{color:var(--muted);font-size:12px}.revenue strong{font:500 22px Georgia,serif;color:var(--green)}.activity-list{list-style:none;padding:8px 20px 16px;margin:0}.activity-list li{display:grid;grid-template-columns:9px 1fr auto;gap:10px;align-items:start;padding:11px 0;border-bottom:1px solid #edf0ed}.activity-list li:last-child{border:0}.event-dot{width:8px;height:8px;background:var(--mint);border:2px solid var(--green);border-radius:50%;margin-top:6px}.event-name{font-weight:750;font-size:12px}.event-user{font-size:11px;color:var(--muted)}.event-time{font-size:11px;color:var(--muted);white-space:nowrap}.users{grid-column:1/-1;margin-top:16px}.filters{display:flex;gap:8px}.filters input,.filters select{border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 10px;color:var(--ink);outline:none}.filters input:focus,.filters select:focus{border-color:var(--green);box-shadow:0 0 0 3px #e2f1eb}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:920px}th,td{text-align:left;padding:13px 18px;border-bottom:1px solid #edf0ed}th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:#fafbf9}tbody tr:hover{background:#fafcf9}.user{display:flex;gap:10px;align-items:center}.avatar{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--mint);color:var(--green);font-weight:900}.user b{display:block;font-size:12px}.user small{color:var(--muted)}.badge{display:inline-flex;padding:4px 8px;border-radius:99px;font-size:10px;font-weight:850;letter-spacing:.04em;background:#edf0ee;color:#52615b}.badge.active,.badge.paid{background:#d9f4e9;color:#08714d}.badge.trialing{background:#eff6c9;color:#63720e}.badge.past_due,.badge.failed{background:#fde5d6;color:#a44d14}.badge.pending_payment,.badge.pending{background:#eee8ff;color:#6244a5}.badge.suspended,.badge.cancelled,.badge.expired,.badge.unpaid{background:#f1e3e1;color:#8d3831}.empty{padding:40px;text-align:center;color:var(--muted)}.error{display:none;margin-bottom:16px;padding:12px 14px;border-radius:10px;background:#fae5e2;color:#8f3026;border:1px solid #efc9c3}.loading{opacity:.55;pointer-events:none}@media(max-width:1000px){.shell{grid-template-columns:78px 1fr}.sidebar{padding:22px 12px}.brand div:last-child,.nav-item span:last-child,.nav-label,.side-foot{display:none}.brand{justify-content:center}.nav-item{justify-content:center}.main{padding:24px 20px}.metric{grid-column:span 6}.billing,.activity{grid-column:1/-1}}@media(max-width:620px){.shell{display:block}.sidebar{position:static;height:auto;display:flex;flex-direction:row;padding:10px 14px;align-items:center}.brand{margin:0 8px 0 0}.nav-label,.side-foot{display:none}.sidebar nav{display:flex;overflow:auto}.nav-item{margin:0;padding:10px}.main{padding:20px 14px}.topbar{align-items:flex-start;gap:12px}.topbar h1{font-size:26px}.actions{flex-direction:column;align-items:flex-end}.metric{grid-column:1/-1;min-height:105px}.panel-head{align-items:flex-start;gap:12px;flex-direction:column}.filters{width:100%}.filters input{width:100%}}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.sidebar{position:sticky;top:0;height:100vh;background:var(--nav);color:#eaf5ee;padding:28px 20px;display:flex;flex-direction:column}.brand{display:flex;gap:11px;align-items:center;margin-bottom:40px}.mark{width:38px;height:38px;border-radius:12px;background:var(--lime);color:var(--nav);display:grid;place-items:center;font-weight:900;font-size:18px}.brand strong{display:block;font-size:15px;letter-spacing:.02em}.brand small{color:#9fbaaf}.nav-label{text-transform:uppercase;letter-spacing:.14em;color:#78968a;font-size:10px;font-weight:800;margin:10px 12px}.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;color:#aac0b7;text-decoration:none;border-radius:10px;margin:3px 0}.nav-item.active{background:#1b3b30;color:#fff}.nav-item:hover{background:#17342b;color:#fff}.nav-icon{font-size:16px;width:20px;text-align:center}.side-foot{margin-top:auto;padding:14px;border:1px solid #2d493f;border-radius:12px;color:#a7beb4}.side-foot b{display:block;color:#fff;margin-bottom:4px}.main{padding:28px 34px 48px;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}.eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--green);font-weight:800}.topbar h1{font-family:Georgia,serif;font-size:32px;line-height:1.1;margin:4px 0 0;font-weight:500}.actions{display:flex;align-items:center;gap:12px}.refresh,.logout{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;color:var(--ink)}.refresh:hover{border-color:var(--green)}.logout:hover{border-color:var(--red);color:var(--red)}.timestamp{color:var(--muted);font-size:12px}.status-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.health{display:flex;align-items:center;gap:7px;background:#fff;padding:7px 10px;border:1px solid var(--line);border-radius:99px;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:#99a39f}.dot.ok{background:#19a573;box-shadow:0 0 0 3px #d9f4e9}.dot.bad{background:var(--orange);box-shadow:0 0 0 3px #fbe8d9}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.metric{grid-column:span 3;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-height:128px}.metric.emphasis{background:var(--nav);color:#fff;border-color:var(--nav)}.metric .label{color:var(--muted);font-size:12px;font-weight:700}.metric.emphasis .label{color:#a9c0b6}.metric .value{font-family:Georgia,serif;font-size:31px;line-height:1.1;margin:11px 0 6px}.delta{color:var(--green);font-size:12px}.metric.emphasis .delta{color:var(--lime)}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)}.panel-head h2{font:500 20px Georgia,serif;margin:0}.panel-head p{margin:2px 0 0;color:var(--muted);font-size:12px}.billing{grid-column:span 7;margin-top:16px}.activity{grid-column:span 5;margin-top:16px}.billing-body{padding:20px}.bar-row{display:grid;grid-template-columns:110px 1fr 50px;align-items:center;gap:10px;margin:15px 0}.bar-label{color:var(--muted);font-size:12px}.bar-track{height:9px;background:#edf0ec;border-radius:99px;overflow:hidden}.bar-fill{height:100%;min-width:3px;border-radius:99px;background:var(--green)}.bar-fill.trial{background:#91b238}.bar-fill.past{background:var(--orange)}.bar-fill.pending{background:#acb6b1}.bar-value{text-align:right;font-weight:800}.revenue{margin-top:18px;padding:16px;border-radius:12px;background:#eef7f2;display:flex;align-items:center;justify-content:space-between}.revenue span{color:var(--muted);font-size:12px}.revenue strong{font:500 22px Georgia,serif;color:var(--green)}.activity-list{list-style:none;padding:8px 20px 16px;margin:0}.activity-list li{display:grid;grid-template-columns:9px 1fr auto;gap:10px;align-items:start;padding:11px 0;border-bottom:1px solid #edf0ed}.activity-list li:last-child{border:0}.event-dot{width:8px;height:8px;background:var(--mint);border:2px solid var(--green);border-radius:50%;margin-top:6px}.event-name{font-weight:750;font-size:12px}.event-user{font-size:11px;color:var(--muted)}.event-time{font-size:11px;color:var(--muted);white-space:nowrap}.users,.admin-audit,.admins{grid-column:1/-1;margin-top:16px}.filters{display:flex;gap:8px}.filters input,.filters select{border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 10px;color:var(--ink);outline:none}.filters input:focus,.filters select:focus{border-color:var(--green);box-shadow:0 0 0 3px #e2f1eb}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:920px}th,td{text-align:left;padding:13px 18px;border-bottom:1px solid #edf0ed}th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:#fafbf9}tbody tr:hover{background:#fafcf9}.user{display:flex;gap:10px;align-items:center}.avatar{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--mint);color:var(--green);font-weight:900}.user b{display:block;font-size:12px}.user small{color:var(--muted)}.badge{display:inline-flex;padding:4px 8px;border-radius:99px;font-size:10px;font-weight:850;letter-spacing:.04em;background:#edf0ee;color:#52615b}.badge.active,.badge.paid{background:#d9f4e9;color:#08714d}.badge.trialing{background:#eff6c9;color:#63720e}.badge.past_due,.badge.failed{background:#fde5d6;color:#a44d14}.badge.pending_payment,.badge.pending{background:#eee8ff;color:#6244a5}.badge.suspended,.badge.cancelled,.badge.expired,.badge.unpaid{background:#f1e3e1;color:#8d3831}.empty{padding:40px;text-align:center;color:var(--muted)}.error{display:none;margin-bottom:16px;padding:12px 14px;border-radius:10px;background:#fae5e2;color:#8f3026;border:1px solid #efc9c3}.loading{opacity:.55;pointer-events:none}.row-actions{display:flex;flex-wrap:wrap;gap:6px}.row-actions button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:700;cursor:pointer;color:var(--ink)}.row-actions button:hover{border-color:var(--green)}.row-actions button.danger:hover{border-color:var(--red);color:var(--red)}.row-actions button:disabled{opacity:.4;cursor:not-allowed}.login-screen{min-height:100vh;display:grid;place-items:center;background:var(--paper);padding:20px}.login-card{width:100%;max-width:360px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:28px 26px;display:flex;flex-direction:column;gap:14px}.login-mark{align-self:center;margin-bottom:2px}.login-card h1{font:500 22px Georgia,serif;margin:0;text-align:center}.login-card p{margin:0 0 6px;color:var(--muted);font-size:12px;text-align:center}.login-card label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);font-weight:700}.login-card input{border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;color:var(--ink)}.login-card input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px #e2f1eb}.login-card button{margin-top:6px;border:0;background:var(--green);color:#fff;border-radius:10px;padding:12px;font-weight:800;cursor:pointer}.login-card button:hover{background:#0b543f}.admins-form{display:flex;flex-wrap:wrap;gap:10px;padding:18px 20px;border-bottom:1px solid var(--line)}.admins-form input,.admins-form select{border:1px solid var(--line);border-radius:9px;padding:9px 11px}.admins-form button{border:0;background:var(--green);color:#fff;border-radius:9px;padding:9px 16px;font-weight:800;cursor:pointer}.provisioning{margin:0 20px 18px;padding:14px;border-radius:12px;background:#eef7f2;font-size:12px;word-break:break-all}.provisioning b{display:block;margin-bottom:6px;color:var(--green)}@media(max-width:1000px){.shell{grid-template-columns:78px 1fr}.sidebar{padding:22px 12px}.brand div:last-child,.nav-item span:last-child,.nav-label,.side-foot{display:none}.brand{justify-content:center}.nav-item{justify-content:center}.main{padding:24px 20px}.metric{grid-column:span 6}.billing,.activity{grid-column:1/-1}}@media(max-width:620px){.shell{display:block}.sidebar{position:static;height:auto;display:flex;flex-direction:row;padding:10px 14px;align-items:center}.brand{margin:0 8px 0 0}.nav-label,.side-foot{display:none}.sidebar nav{display:flex;overflow:auto}.nav-item{margin:0;padding:10px}.main{padding:20px 14px}.topbar{align-items:flex-start;gap:12px}.topbar h1{font-size:26px}.actions{flex-direction:column;align-items:flex-end}.metric{grid-column:1/-1;min-height:105px}.panel-head{align-items:flex-start;gap:12px;flex-direction:column}.filters{width:100%}.filters input{width:100%}}
   </style>
 </head>
 <body>
-<div class="shell">
+<div class="login-screen" id="login-screen">
+  <form class="login-card" id="login-form">
+    <div class="mark login-mark">AF</div>
+    <h1>AI Forex Admin</h1>
+    <p>Sign in with your admin credentials and authenticator code.</p>
+    <label>Username<input id="login-username" autocomplete="username" required></label>
+    <label>Password<input id="login-password" type="password" autocomplete="current-password" required></label>
+    <label>Authenticator code<input id="login-totp" inputmode="numeric" maxlength="8" autocomplete="one-time-code" required></label>
+    <div class="error" id="login-error" role="alert"></div>
+    <button type="submit">Sign in</button>
+  </form>
+</div>
+<div class="shell" id="app-shell" style="display:none">
   <aside class="sidebar">
     <div class="brand"><div class="mark">AF</div><div><strong>AI Forex</strong><small>Control room</small></div></div>
     <nav>
@@ -18,8 +30,14 @@
       <a class="nav-item active" href="#overview"><span class="nav-icon">◫</span><span>Overview</span></a>
       <a class="nav-item" href="#users"><span class="nav-icon">◎</span><span>Users & billing</span></a>
       <a class="nav-item" href="#activity"><span class="nav-icon">↗</span><span>Audit activity</span></a>
+      <a class="nav-item" href="#admin-audit" id="nav-admin-audit"><span class="nav-icon">🛡</span><span>Admin audit</span></a>
+      <a class="nav-item" href="#admins" id="nav-admins"><span class="nav-icon">☺</span><span>Admins</span></a>
     </nav>
-    <div class="side-foot"><b>Read-only console</b>No credentials or trade execution controls are exposed here.</div>
+    <div class="side-foot">
+      <b id="side-foot-user">Signed in</b>
+      <span>Actions are limited by role and fully audited.</span>
+      <button class="logout" id="logout" type="button" style="margin-top:10px;width:100%">Sign out</button>
+    </div>
   </aside>
   <main class="main" id="overview">
     <header class="topbar">
@@ -60,7 +78,34 @@
           <form class="filters" id="filters"><input id="search" type="search" placeholder="Search user…" aria-label="Search users"><select id="subscription" aria-label="Subscription status"><option value="">All subscriptions</option><option>ACTIVE</option><option>TRIALING</option><option>PENDING_PAYMENT</option><option>PAST_DUE</option><option>SUSPENDED</option><option>CANCELLED</option><option>EXPIRED</option><option>UNPAID</option></select></form>
         </div>
         <div class="table-wrap">
-          <table><thead><tr><th>User</th><th>Status</th><th>Plan</th><th>Subscription</th><th>Latest invoice</th><th>MT5 accounts</th><th>Trading</th><th>Paid through</th></tr></thead><tbody id="users-body"><tr><td colspan="8" class="empty">Loading users…</td></tr></tbody></table>
+          <table><thead><tr><th>User</th><th>Status</th><th>Plan</th><th>Subscription</th><th>Latest invoice</th><th>MT5 accounts</th><th>Trading</th><th>Paid through</th><th>Actions</th></tr></thead><tbody id="users-body"><tr><td colspan="9" class="empty">Loading users…</td></tr></tbody></table>
+        </div>
+      </article>
+
+      <article class="panel admin-audit" id="admin-audit-panel">
+        <div class="panel-head"><div><h2>Admin audit</h2><p>Actions taken by administrators, with the reason recorded for each one</p></div></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Action</th><th>Admin</th><th>Target</th><th>Reason</th><th>When</th></tr></thead><tbody id="admin-audit-body"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody></table>
+        </div>
+      </article>
+
+      <article class="panel admins" id="admins-panel">
+        <div class="panel-head"><div><h2>Admins</h2><p>Owner-only: create administrator accounts and manage roles</p></div></div>
+        <form class="admins-form" id="create-admin-form">
+          <input id="new-admin-username" placeholder="Username" autocomplete="off" required>
+          <input id="new-admin-password" placeholder="Temporary password (min 12 chars)" type="password" autocomplete="new-password" required>
+          <select id="new-admin-role">
+            <option value="OWNER">Owner</option>
+            <option value="SECURITY_OPERATOR">Security operator</option>
+            <option value="OPS_ADMIN" selected>Ops admin</option>
+            <option value="SUPPORT_AGENT">Support agent</option>
+            <option value="AUDITOR">Auditor</option>
+          </select>
+          <button type="submit">Create admin</button>
+        </form>
+        <div class="provisioning" id="provisioning" style="display:none"></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody id="admins-table-body"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody></table>
         </div>
       </article>
     </section>
@@ -68,6 +113,7 @@
 </div>
 <script>
   const $ = id => document.getElementById(id);
+  const appState = { role: null, username: null, csrfToken: null };
   const number = value => new Intl.NumberFormat('en-US').format(value || 0);
   const money = value => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(value || 0);
   const date = value => value ? new Intl.DateTimeFormat('en-GB',{dateStyle:'medium'}).format(new Date(value)) : '—';
@@ -77,9 +123,92 @@
   const cell = (row, value) => { const td=document.createElement('td'); if(value instanceof Node) td.append(value); else td.textContent=value; row.append(td); };
   function health(id,status){$(id+'-status').textContent=status;$(id+'-dot').className='dot '+(status==='ok'||status==='disabled'?'ok':'bad');}
   function showError(error){$('error').style.display='block';$('error').textContent=error instanceof Error?error.message:String(error);}
-  async function json(path){const response=await fetch(path,{headers:{Accept:'application/json'},cache:'no-store'});if(!response.ok)throw new Error('Dashboard request failed ('+response.status+')');return response.json();}
+  function setVisible(id, visible){ $(id).style.display = visible ? '' : 'none'; }
+
+  function canMutateUserStatus(){ return ['OWNER','OPS_ADMIN','SUPPORT_AGENT'].includes(appState.role); }
+  function canMutateBilling(){ return ['OWNER','OPS_ADMIN'].includes(appState.role); }
+  function canViewAdminAudit(){ return ['OWNER','SECURITY_OPERATOR','AUDITOR'].includes(appState.role); }
+  function canManageAdmins(){ return appState.role === 'OWNER'; }
+
+  function showLogin(){ $('app-shell').style.display='none'; $('login-screen').style.display='grid'; }
+  function showApp(){ $('login-screen').style.display='none'; $('app-shell').style.display='grid'; }
+
+  async function api(path, options){
+    options = options || {};
+    const method = (options.method || 'GET').toUpperCase();
+    const headers = Object.assign({ Accept: 'application/json' }, options.headers || {});
+    if (method !== 'GET') {
+      headers['X-Admin-Csrf-Token'] = appState.csrfToken || '';
+      headers['Content-Type'] = 'application/json';
+    }
+    const response = await fetch(path, Object.assign({}, options, { headers, credentials: 'same-origin', cache: 'no-store' }));
+    if (response.status === 401) { showLogin(); throw new Error('Session expired. Please sign in again.'); }
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(body.error || ('Request failed (' + response.status + ')'));
+    }
+    return response.status === 204 ? null : response.json();
+  }
+
+  async function mutate(path, extra){
+    const reason = window.prompt('Reason for this action (recorded in the admin audit log):');
+    if (reason === null) return;
+    if (reason.trim().length < 5) { alert('Reason must be at least 5 characters.'); return; }
+    try {
+      await api(path, { method: 'POST', body: JSON.stringify(Object.assign({ reason: reason.trim() }, extra || {})) });
+      await load();
+    } catch (error) { showError(error); }
+  }
+
+  async function grantCredit(userId){
+    const amountStr = window.prompt('Credit amount in IDR (whole rupiah):');
+    if (amountStr === null) return;
+    const amount = parseInt(amountStr, 10);
+    if (!Number.isFinite(amount) || amount <= 0) { alert('Enter a positive whole number.'); return; }
+    await mutate('/admin/api/users/' + userId + '/credit', { amount_minor: amount });
+  }
+
+  function buildActions(item){
+    const wrap = document.createElement('div');
+    wrap.className = 'row-actions';
+    if (canMutateUserStatus()) {
+      const isActive = item.user_status === 'ACTIVE';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = isActive ? 'Suspend' : 'Reactivate';
+      if (isActive) btn.classList.add('danger');
+      btn.addEventListener('click', () => mutate('/admin/api/users/' + item.id + '/' + (isActive ? 'suspend' : 'reactivate')));
+      wrap.append(btn);
+    }
+    if (canMutateBilling()) {
+      const creditBtn = document.createElement('button');
+      creditBtn.type = 'button';
+      creditBtn.textContent = 'Grant credit';
+      creditBtn.addEventListener('click', () => grantCredit(item.id));
+      wrap.append(creditBtn);
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button';
+      cancelBtn.textContent = 'Cancel at period end';
+      cancelBtn.disabled = !item.current_subscription_id;
+      cancelBtn.addEventListener('click', () => mutate('/admin/api/subscriptions/' + item.current_subscription_id + '/cancel-at-period-end'));
+      wrap.append(cancelBtn);
+
+      const pending = item.latest_invoice_status === 'REFUND_PENDING';
+      const refundable = item.latest_invoice_status === 'PAID';
+      const refundBtn = document.createElement('button');
+      refundBtn.type = 'button';
+      refundBtn.textContent = pending ? 'Confirm refund' : 'Mark refund pending';
+      refundBtn.disabled = !item.latest_invoice_id || !(refundable || pending);
+      refundBtn.addEventListener('click', () => mutate('/admin/api/invoices/' + item.latest_invoice_id + (pending ? '/confirm-refund' : '/refund')));
+      wrap.append(refundBtn);
+    }
+    if (!wrap.children.length) wrap.textContent = '—';
+    return wrap;
+  }
+
   async function loadOverview(){
-    const d=await json('/admin/api/overview');
+    const d=await api('/admin/api/overview');
     $('total-users').textContent=number(d.total_users); $('active-users').textContent=number(d.active_users)+' active';
     $('accounts').textContent=number(d.total_accounts); $('verified-accounts').textContent=number(d.verified_accounts)+' verified';
     $('analyses').textContent=number(d.analyses_today); $('intents').textContent=number(d.trade_intents_today);
@@ -93,14 +222,137 @@
     if(!d.recent_audit.length){const li=document.createElement('li');li.className='empty';li.textContent='No audit events yet.';list.append(li);}
     d.recent_audit.forEach(item=>{const li=document.createElement('li');const dot=document.createElement('i');dot.className='event-dot';const copy=document.createElement('div');const name=document.createElement('div');name.className='event-name';name.textContent=label(item.event_type);const user=document.createElement('div');user.className='event-user';user.textContent=item.user_label+' · '+label(item.entity_type);copy.append(name,user);const when=document.createElement('span');when.className='event-time';when.textContent=time(item.created_at);li.append(dot,copy,when);list.append(li);});
   }
+
   async function loadUsers(){
     const params=new URLSearchParams({search:$('search').value,subscription:$('subscription').value,limit:'100'});
-    const d=await json('/admin/api/users?'+params);const body=$('users-body');body.replaceChildren();
-    if(!d.items.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=8;td.className='empty';td.textContent='No users match this filter.';tr.append(td);body.append(tr);return;}
-    d.items.forEach(item=>{const tr=document.createElement('tr');const identity=document.createElement('div');identity.className='user';const avatar=document.createElement('span');avatar.className='avatar';avatar.textContent=(item.first_name||item.telegram_username||'U').slice(0,1).toUpperCase();const copy=document.createElement('div');const name=document.createElement('b');name.textContent=item.first_name||item.telegram_username||'Telegram user';const detail=document.createElement('small');detail.textContent=(item.telegram_username?'@'+item.telegram_username+' · ':'')+item.telegram_user_id;copy.append(name,detail);identity.append(avatar,copy);cell(tr,identity);cell(tr,badge(item.user_status));cell(tr,item.plan_name||'No plan');cell(tr,badge(item.subscription_status));cell(tr,item.latest_invoice_status?badge(item.latest_invoice_status):'—');cell(tr,number(item.verified_account_count)+' / '+number(item.account_count)+' verified');cell(tr,badge(item.trading_enabled?'ACTIVE':'DISABLED'));cell(tr,date(item.current_period_end));body.append(tr);});
+    const d=await api('/admin/api/users?'+params);const body=$('users-body');body.replaceChildren();
+    if(!d.items.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=9;td.className='empty';td.textContent='No users match this filter.';tr.append(td);body.append(tr);return;}
+    d.items.forEach(item=>{const tr=document.createElement('tr');const identity=document.createElement('div');identity.className='user';const avatar=document.createElement('span');avatar.className='avatar';avatar.textContent=(item.first_name||item.telegram_username||'U').slice(0,1).toUpperCase();const copy=document.createElement('div');const name=document.createElement('b');name.textContent=item.first_name||item.telegram_username||'Telegram user';const detail=document.createElement('small');detail.textContent=(item.telegram_username?'@'+item.telegram_username+' · ':'')+item.telegram_user_id;copy.append(name,detail);identity.append(avatar,copy);cell(tr,identity);cell(tr,badge(item.user_status));cell(tr,item.plan_name||'No plan');cell(tr,badge(item.subscription_status));cell(tr,item.latest_invoice_status?badge(item.latest_invoice_status):'—');cell(tr,number(item.verified_account_count)+' / '+number(item.account_count)+' verified');cell(tr,badge(item.trading_enabled?'ACTIVE':'DISABLED'));cell(tr,date(item.current_period_end));cell(tr,buildActions(item));body.append(tr);});
   }
-  async function load(){document.body.classList.add('loading');$('error').style.display='none';try{await Promise.all([loadOverview(),loadUsers()]);}catch(error){showError(error);}finally{document.body.classList.remove('loading');}}
-  let timer;$('filters').addEventListener('submit',event=>event.preventDefault());$('search').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(loadUsers,250)});$('subscription').addEventListener('change',loadUsers);$('refresh').addEventListener('click',load);load();
+
+  async function loadAdminAudit(){
+    if (!canViewAdminAudit()) return;
+    const d = await api('/admin/api/audit');
+    const body = $('admin-audit-body'); body.replaceChildren();
+    if (!d.items.length) { const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=5;td.className='empty';td.textContent='No admin actions recorded yet.';tr.append(td);body.append(tr);return; }
+    d.items.forEach(item => {
+      const tr = document.createElement('tr');
+      cell(tr, label(item.action));
+      cell(tr, item.admin_username || '—');
+      cell(tr, label(item.target_type) + (item.target_id ? ' · ' + item.target_id.slice(0,8) : ''));
+      cell(tr, item.reason || '—');
+      cell(tr, time(item.created_at));
+      body.append(tr);
+    });
+  }
+
+  async function loadAdmins(){
+    if (!canManageAdmins()) return;
+    const d = await api('/admin/api/admins');
+    const body = $('admins-table-body'); body.replaceChildren();
+    if (!d.items.length) { const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=5;td.className='empty';td.textContent='No admins yet.';tr.append(td);body.append(tr);return; }
+    d.items.forEach(item => {
+      const tr = document.createElement('tr');
+      cell(tr, item.username);
+      cell(tr, label(item.role));
+      cell(tr, badge(item.is_active ? 'ACTIVE' : 'SUSPENDED'));
+      cell(tr, date(item.created_at));
+      const actions = document.createElement('div'); actions.className = 'row-actions';
+      const toggleBtn = document.createElement('button'); toggleBtn.type = 'button';
+      toggleBtn.textContent = item.is_active ? 'Deactivate' : 'Reactivate';
+      toggleBtn.disabled = item.username === appState.username;
+      toggleBtn.addEventListener('click', async () => {
+        try { await api('/admin/api/admins/' + item.id + '/' + (item.is_active ? 'deactivate' : 'reactivate'), { method: 'POST' }); await loadAdmins(); }
+        catch (error) { showError(error); }
+      });
+      actions.append(toggleBtn);
+      cell(tr, actions);
+      body.append(tr);
+    });
+  }
+
+  async function load(){
+    document.body.classList.add('loading');$('error').style.display='none';
+    try{ await Promise.all([loadOverview(),loadUsers(),loadAdminAudit(),loadAdmins()]); }
+    catch(error){showError(error);}
+    finally{document.body.classList.remove('loading');}
+  }
+
+  function applyRoleVisibility(){
+    setVisible('nav-admin-audit', canViewAdminAudit());
+    setVisible('admin-audit-panel', canViewAdminAudit());
+    setVisible('nav-admins', canManageAdmins());
+    setVisible('admins-panel', canManageAdmins());
+  }
+
+  function onAuthenticated(){
+    $('side-foot-user').textContent = appState.username + ' · ' + label(appState.role);
+    applyRoleVisibility();
+    showApp();
+    load();
+  }
+
+  async function bootstrap(){
+    try{
+      const response = await fetch('/admin/auth/session', { credentials: 'same-origin', cache: 'no-store' });
+      if (!response.ok) throw new Error('no session');
+      const data = await response.json();
+      appState.role = data.role; appState.username = data.username; appState.csrfToken = data.csrf_token;
+      onAuthenticated();
+    } catch { showLogin(); }
+  }
+
+  $('login-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorBox = $('login-error'); errorBox.style.display = 'none';
+    try {
+      const response = await fetch('/admin/auth/login', {
+        method: 'POST', credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: $('login-username').value,
+          password: $('login-password').value,
+          totp_code: $('login-totp').value,
+        }),
+      });
+      if (!response.ok) { const body = await response.json().catch(() => ({})); throw new Error(body.error || 'Sign-in failed.'); }
+      const data = await response.json();
+      appState.role = data.role; appState.username = data.username; appState.csrfToken = data.csrf_token;
+      $('login-form').reset();
+      onAuthenticated();
+    } catch (error) { errorBox.textContent = error.message; errorBox.style.display = 'block'; }
+  });
+
+  $('logout').addEventListener('click', async () => {
+    try { await api('/admin/auth/logout', { method: 'POST' }); } catch {}
+    showLogin();
+  });
+
+  $('create-admin-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      const result = await api('/admin/api/admins', {
+        method: 'POST',
+        body: JSON.stringify({
+          username: $('new-admin-username').value.trim(),
+          temporary_password: $('new-admin-password').value,
+          role: $('new-admin-role').value,
+        }),
+      });
+      const box = $('provisioning'); box.style.display = 'block'; box.replaceChildren();
+      const strong = document.createElement('b'); strong.textContent = 'Save this now — shown only once';
+      const secretLine = document.createElement('div'); secretLine.textContent = 'Manual entry secret: ' + result.totp_secret_base32;
+      const urlLine = document.createElement('div'); urlLine.textContent = 'Provisioning URL: ' + result.totp_provisioning_url;
+      box.append(strong, secretLine, urlLine);
+      $('create-admin-form').reset();
+      await loadAdmins();
+    } catch (error) { showError(error); }
+  });
+
+  let timer;$('filters').addEventListener('submit',event=>event.preventDefault());$('search').addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(loadUsers,250)});$('subscription').addEventListener('change',loadUsers);$('refresh').addEventListener('click',load);
+
+  showLogin();
+  bootstrap();
 </script>
 </body>
 </html>
