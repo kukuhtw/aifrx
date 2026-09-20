@@ -12,7 +12,6 @@ mod trading;
 
 use axum::{
     middleware,
-    response::Redirect,
     routing::{get, post},
     Router,
 };
@@ -45,7 +44,6 @@ async fn main() -> anyhow::Result<()> {
             admin::require_admin,
         ));
     let app = Router::new()
-        .route("/admin", get(|| async { Redirect::permanent("/admin/") }))
         .nest("/admin", admin_routes)
         .route("/health", get(routes::health))
         .route("/api/v1/analyses", post(routes::analyze))
