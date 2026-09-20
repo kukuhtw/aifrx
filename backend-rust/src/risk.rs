@@ -80,6 +80,7 @@ mod tests {
     fn cfg() -> Config {
         Config {
             database_url: "x".into(),
+            telegram_bot_token: None,
             openai_api_key: None,
             openai_model: "x".into(),
             mt5_bridge_url: "x".into(),
