@@ -343,3 +343,66 @@ pub async fn session_info(
         "csrf_token": csrf_token,
     })))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::http::HeaderMap;
+
+    #[test]
+    fn role_matrix_allows_and_denies() {
+        let identity = AdminIdentity {
+            admin_user_id: Uuid::nil(),
+            username: "ops".into(),
+            role: AdminRole::OpsAdmin,
+            session_id: Uuid::nil(),
+        };
+        assert!(identity
+            .require_role(&[AdminRole::Owner, AdminRole::OpsAdmin])
+            .is_ok());
+        assert!(identity.require_role(&[AdminRole::Auditor]).is_err());
+    }
+
+    #[test]
+    fn admin_role_round_trips_through_text() {
+        for role in [
+            AdminRole::Owner,
+            AdminRole::SecurityOperator,
+            AdminRole::OpsAdmin,
+            AdminRole::SupportAgent,
+            AdminRole::Auditor,
+        ] {
+            let parsed: AdminRole = role.as_str().parse().unwrap();
+            assert_eq!(parsed, role);
+        }
+        assert!("NOT_A_ROLE".parse::<AdminRole>().is_err());
+    }
+
+    #[test]
+    fn totp_accepts_current_code_and_rejects_a_flipped_one() {
+        let totp = build_totp(b"a-test-totp-secret-1".to_vec(), "tester").unwrap();
+        let code = totp.generate_current().to_string();
+        assert!(totp.check_current(&code).is_some());
+
+        let mut wrong = code.clone();
+        let last = wrong.pop().unwrap();
+        wrong.push(if last == '0' { '1' } else { '0' });
+        assert!(totp.check_current(&wrong).is_none());
+    }
+
+    #[test]
+    fn extract_session_cookie_finds_named_cookie_among_others() {
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            header::COOKIE,
+            HeaderValue::from_static("other=1; admin_session=deadbeef; another=2"),
+        );
+        assert_eq!(extract_session_cookie(&headers).as_deref(), Some("deadbeef"));
+    }
+
+    #[test]
+    fn extract_session_cookie_absent_returns_none() {
+        let headers = HeaderMap::new();
+        assert!(extract_session_cookie(&headers).is_none());
+    }
+}

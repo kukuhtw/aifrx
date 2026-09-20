@@ -1,4 +1,6 @@
 mod admin;
+mod admin_actions;
+mod admin_auth;
 mod ai;
 mod config;
 mod crypto;
@@ -46,14 +48,57 @@ async fn main() -> anyhow::Result<()> {
     } else {
         tracing::info!("TELEGRAM_BOT_TOKEN is empty; Telegram bot disabled");
     }
-    let admin_routes = Router::new()
-        .route("/", get(admin::dashboard))
-        .route("/api/overview", get(admin::overview))
-        .route("/api/users", get(admin::users))
+    let admin_api_routes = Router::new()
+        .route("/overview", get(admin::overview))
+        .route("/users", get(admin::users))
+        .route("/users/{id}/suspend", post(admin_actions::suspend_user))
+        .route("/users/{id}/reactivate", post(admin_actions::reactivate_user))
+        .route("/users/{id}/credit", post(admin_actions::grant_credit))
+        .route(
+            "/subscriptions/{id}/cancel-at-period-end",
+            post(admin_actions::cancel_subscription),
+        )
+        .route("/invoices/{id}/refund", post(admin_actions::refund_invoice))
+        .route(
+            "/invoices/{id}/confirm-refund",
+            post(admin_actions::confirm_refund),
+        )
+        .route("/audit", get(admin_actions::list_admin_audit))
+        .route(
+            "/admins",
+            get(admin_actions::list_admins).post(admin_actions::create_admin_user),
+        )
+        .route("/admins/{id}/role", post(admin_actions::change_admin_role))
+        .route(
+            "/admins/{id}/deactivate",
+            post(admin_actions::deactivate_admin),
+        )
+        .route(
+            "/admins/{id}/reactivate",
+            post(admin_actions::reactivate_admin),
+        )
         .route_layer(middleware::from_fn_with_state(
             state.clone(),
-            admin::require_admin,
+            admin_auth::require_admin_session,
         ));
+    let admin_routes = Router::new()
+        .route("/", get(admin::dashboard))
+        .route("/auth/login", post(admin_auth::login))
+        .route(
+            "/auth/logout",
+            post(admin_auth::logout).route_layer(middleware::from_fn_with_state(
+                state.clone(),
+                admin_auth::require_admin_session,
+            )),
+        )
+        .route(
+            "/auth/session",
+            get(admin_auth::session_info).route_layer(middleware::from_fn_with_state(
+                state.clone(),
+                admin_auth::require_admin_session,
+            )),
+        )
+        .nest("/api", admin_api_routes);
     let app = Router::new()
         .nest("/admin", admin_routes)
         .route("/health", get(routes::health))

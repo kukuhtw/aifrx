@@ -89,8 +89,6 @@ mod tests {
             trading_mode: TradingMode::Demo,
             live_trading_enabled: false,
             market_data_max_age_seconds: 30,
-            admin_username: "admin".into(),
-            admin_password_hash: None,
         }
     }
     fn valid<'a>() -> RiskInput<'a> {
