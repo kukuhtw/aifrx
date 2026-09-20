@@ -1,11 +1,11 @@
-FROM rust:1.85-bookworm AS build
+FROM rust:1.88-bookworm AS build
 WORKDIR /app
 COPY Cargo.toml ./
+COPY Cargo.lock ./
 COPY backend-rust ./backend-rust
-RUN cargo build --release -p ai-forex-backend
+RUN cargo build --release --locked -p ai-forex-backend
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/*
 COPY --from=build /app/target/release/ai-forex-backend /usr/local/bin/backend
 EXPOSE 8080
 CMD ["backend"]
-

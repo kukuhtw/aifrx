@@ -356,6 +356,7 @@ Current tests cover credential encryption, safe demo risk input, live-account re
 - [Architecture and trade sequence](docs/architecture.md)
 - [MT5 and the Rust-Python architecture](docs/mt5-and-dual-tech-stack.md)
 - [Deployment guide: VPS setup with Docker or native](docs/deployment-guide.md)
+- [Deploying with Dokploy](docs/dokploy-deployment.md)
 - [MT5 deployment](docs/mt5-deployment.md)
 - [Can this run on a Linux VPS instead of Windows?](docs/linux-vps-deployment.md)
 - [Deploying the MT5 Bridge to a Windows VPS](docs/windows-vps-deployment.md)
@@ -391,4 +392,3 @@ Licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). The source i
 - Email: [kukuhtw@gmail.com](mailto:kukuhtw@gmail.com)
 
 Additional information is available in [AUTHORS.md](AUTHORS.md).
-

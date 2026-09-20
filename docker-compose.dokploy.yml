@@ -1,0 +1,85 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aiforex
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in Dokploy}
+      POSTGRES_DB: aiforex
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aiforex -d aiforex"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - internal
+
+  mt5-bridge:
+    build:
+      context: .
+      dockerfile: mt5-bridge/Dockerfile
+    restart: unless-stopped
+    environment:
+      MT5_BRIDGE_API_KEY: ${MT5_BRIDGE_API_KEY:?Set MT5_BRIDGE_API_KEY in Dokploy}
+      MT5_MODE: MOCK
+    expose:
+      - "8000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - internal
+
+  rust-backend:
+    build:
+      context: .
+      dockerfile: backend-rust/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in Dokploy}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5-mini}
+      MT5_BRIDGE_URL: http://mt5-bridge:8000
+      MT5_BRIDGE_API_KEY: ${MT5_BRIDGE_API_KEY:?Set MT5_BRIDGE_API_KEY in Dokploy}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY in Dokploy}
+      TRADING_MODE: ${TRADING_MODE:-DEMO}
+      LIVE_TRADING_ENABLED: "false"
+      MARKET_DATA_MAX_AGE_SECONDS: ${MARKET_DATA_MAX_AGE_SECONDS:-30}
+      RUST_LOG: ${RUST_LOG:-info}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD_HASH_B64: ${ADMIN_PASSWORD_HASH_B64:-}
+      BIND_ADDR: 0.0.0.0:8080
+    expose:
+      - "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mt5-bridge:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    stop_grace_period: 30s
+    networks:
+      - internal
+
+volumes:
+  postgres-data:
+
+networks:
+  internal:
+    driver: bridge
+
