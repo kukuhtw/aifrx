@@ -1,71 +1,16 @@
 use std::sync::Arc;
 
-use argon2::{password_hash::PasswordHash, Argon2, PasswordVerifier};
 use axum::{
-    extract::{Query, Request, State},
-    http::{header, HeaderMap, HeaderValue, StatusCode},
-    middleware::Next,
-    response::{Html, IntoResponse, Response},
+    extract::{Query, State},
+    http::header,
+    response::{Html, IntoResponse},
     Json,
 };
-use base64::{engine::general_purpose::STANDARD, Engine};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::{error::AppError, state::AppState};
-
-pub async fn require_admin(
-    State(state): State<Arc<AppState>>,
-    request: Request,
-    next: Next,
-) -> Response {
-    let authenticated = state
-        .config
-        .admin_password_hash
-        .as_deref()
-        .and_then(|hash| credentials(request.headers()).map(|credentials| (hash, credentials)))
-        .is_some_and(|(hash, (username, password))| {
-            username == state.config.admin_username
-                && PasswordHash::new(hash).is_ok_and(|parsed| {
-                    Argon2::default()
-                        .verify_password(password.as_bytes(), &parsed)
-                        .is_ok()
-                })
-        });
-
-    if authenticated {
-        return next.run(request).await;
-    }
-
-    let status = if state.config.admin_password_hash.is_some() {
-        StatusCode::UNAUTHORIZED
-    } else {
-        StatusCode::SERVICE_UNAVAILABLE
-    };
-    let message = if status == StatusCode::UNAUTHORIZED {
-        "Administrator authentication required"
-    } else {
-        "Admin dashboard is not configured"
-    };
-    let mut response = (status, message).into_response();
-    response.headers_mut().insert(
-        header::WWW_AUTHENTICATE,
-        HeaderValue::from_static("Basic realm=\"AI Forex Admin\", charset=\"UTF-8\""),
-    );
-    response
-}
-
-fn credentials(headers: &HeaderMap) -> Option<(String, String)> {
-    let encoded = headers
-        .get(header::AUTHORIZATION)?
-        .to_str()
-        .ok()?
-        .strip_prefix("Basic ")?;
-    let decoded = String::from_utf8(STANDARD.decode(encoded).ok()?).ok()?;
-    let (username, password) = decoded.split_once(':')?;
-    Some((username.to_owned(), password.to_owned()))
-}
 
 pub async fn dashboard() -> impl IntoResponse {
     let headers = [
@@ -217,8 +162,10 @@ pub struct AdminUserRow {
     trading_enabled: bool,
     plan_name: Option<String>,
     subscription_status: String,
+    current_subscription_id: Option<Uuid>,
     current_period_end: Option<DateTime<Utc>>,
     latest_invoice_status: Option<String>,
+    latest_invoice_id: Option<Uuid>,
     created_at: DateTime<Utc>,
 }
 
