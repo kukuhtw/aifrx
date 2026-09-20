@@ -105,7 +105,7 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 ### Planned or incomplete
 
 - Teloxide Telegram command and callback implementation
-- Telegram onboarding and conversational state persistence
+- Full Telegram account onboarding and conversational state persistence beyond the mock-demo MVP
 - MT5 account-addition and credential-management API
 - Full OHLC, indicator, and market-data service
 - Positions, history, close, and SL/TP modification APIs

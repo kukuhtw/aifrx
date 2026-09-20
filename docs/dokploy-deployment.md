@@ -30,6 +30,7 @@ MT5_BRIDGE_API_KEY=<64-character-random-hex-value>
 ENCRYPTION_KEY=<base64-encoded-32-byte-value>
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-5-mini
+TELEGRAM_BOT_TOKEN=<token-from-botfather>
 TRADING_MODE=DEMO
 MARKET_DATA_MAX_AGE_SECONDS=30
 RUST_LOG=info
@@ -49,6 +50,11 @@ cargo run -p ai-forex-backend --bin hash-admin-password
 password contains URL-reserved characters, percent-encode it in `DATABASE_URL`.
 Keep `TRADING_MODE=DEMO`; the Compose file deliberately fixes
 `LIVE_TRADING_ENABLED=false` and `MT5_MODE=MOCK`.
+
+When `TELEGRAM_BOT_TOKEN` is present, the Rust backend starts the bot using
+Telegram long polling. Only one running backend instance may poll a bot token.
+Create the bot with `@BotFather`, paste its token here, redeploy, then open the
+bot's private chat and send `/start`. Leave the value empty to disable Telegram.
 
 ## 3. Deploy and attach the domain
 

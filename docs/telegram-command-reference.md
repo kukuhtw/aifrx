@@ -23,7 +23,7 @@ The supported command set is:
 /help
 ```
 
-> Implementation status: this document is the functional specification for the Telegram interface. The current repository implements the underlying Rust HTTP foundation for analysis, trade-intent creation, confirmation, and the trading kill switch. The complete Teloxide command and callback layer is not implemented yet.
+> Implementation status: a long-polling Teloxide MVP implements `/start`, `/menu`, `/help`, `/status`, `/analyze`, `/buy`, `/sell`, `/history`, `/security`, `/stoptrading`, `/resumetrading`, and user-bound confirmation/cancel callbacks in mock demo mode. Account connection, positions, interactive risk editing, settings, subscriptions, and real MT5 remain future phases.
 
 ## 2. General Command Rules
 
@@ -924,14 +924,14 @@ help - Show guidance and support
 
 ## 23. Implementation Checklist
 
-- [ ] Register every command with Telegram.
-- [ ] Restrict sensitive output to private chats.
-- [ ] Derive identity from Telegram rather than request parameters.
+- [x] Register implemented MVP commands with Telegram.
+- [x] Restrict sensitive output to private chats.
+- [x] Derive identity from Telegram rather than request parameters.
 - [ ] Keep handlers thin and move business logic into Rust services.
 - [ ] Persist conversational state with expiration.
-- [ ] Bind every callback to the user and intended entity.
-- [ ] Require explicit confirmation for opening, closing, and modification.
-- [ ] Make `/stoptrading` immediate and highly available.
+- [x] Bind trade confirmation and resume callbacks to the user and intended entity.
+- [x] Require explicit confirmation for opening mock-demo orders.
+- [x] Make `/stoptrading` immediate.
 - [ ] Mask MT5 account numbers.
 - [ ] Never log credentials or Telegram tokens.
 - [ ] Apply per-command and per-user rate limits.
@@ -940,4 +940,3 @@ help - Show guidance and support
 - [ ] Test cross-user access for every resource command.
 - [ ] Test mock, demo, and live separation.
 - [ ] Use user-friendly errors and confirm when no order was placed.
-

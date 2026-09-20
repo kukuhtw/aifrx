@@ -12,6 +12,7 @@ use teloxide::{
 use uuid::Uuid;
 
 use crate::{
+    error::AppError,
     models::{Analysis, ConfirmIntent, Side},
     state::AppState,
 };
@@ -247,12 +248,12 @@ async fn analyze(state: &AppState, telegram_id: i64, args: &[&str]) -> anyhow::R
         .mt5
         .quote(account, &symbol)
         .await
-        .map_err(anyhow::Error::msg)?;
+        .map_err(anyhow::Error::new)?;
     let analysis = state
         .ai
         .analyze(&quote, &timeframe)
         .await
-        .map_err(anyhow::Error::msg)?;
+        .map_err(anyhow::Error::new)?;
     let analysis_id = Uuid::new_v4();
     sqlx::query("INSERT INTO ai_analyses(id,user_id,account_id,symbol,timeframe,market_data,analysis) VALUES($1,$2,$3,$4,$5,$6,$7)")
         .bind(analysis_id).bind(user).bind(account).bind(&symbol).bind(&timeframe)
@@ -282,7 +283,7 @@ async fn create_intent(
         .mt5
         .quote(account, &symbol)
         .await
-        .map_err(anyhow::Error::msg)?;
+        .map_err(anyhow::Error::new)?;
     let entry = match side {
         Side::Buy => quote.ask,
         Side::Sell => quote.bid,
@@ -312,7 +313,7 @@ async fn confirm_intent(
         },
     )
     .await
-    .map_err(anyhow::Error::msg)?;
+    .map_err(anyhow::Error::new)?;
     Ok(format!("ORDER DEMO BERHASIL\nTicket: {}\nHarga eksekusi: {}\nStatus: {}\nVerifikasi ticket di MetaTrader 5.", order.ticket, order.executed_price, order.status))
 }
 
@@ -405,5 +406,16 @@ fn security() -> &'static str {
 }
 
 fn friendly_error(error: &anyhow::Error) -> String {
-    format!("Tidak dapat melanjutkan: {error}\nTidak ada order baru yang dibuat.")
+    let detail = if let Some(app_error) = error.downcast_ref::<AppError>() {
+        app_error.to_string()
+    } else if error.downcast_ref::<sqlx::Error>().is_some() {
+        "Layanan database sedang tidak tersedia".to_owned()
+    } else {
+        error
+            .chain()
+            .next()
+            .map(ToString::to_string)
+            .unwrap_or_else(|| "Permintaan tidak dapat diproses".to_owned())
+    };
+    format!("Tidak dapat melanjutkan: {detail}\nTidak ada order baru yang dibuat.")
 }
