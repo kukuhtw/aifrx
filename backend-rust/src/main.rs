@@ -8,6 +8,7 @@ mod mt5;
 mod risk;
 mod routes;
 mod state;
+mod telegram;
 mod trading;
 
 use axum::{
@@ -35,6 +36,16 @@ async fn main() -> anyhow::Result<()> {
         .await?;
     sqlx::migrate!("./migrations").run(&pool).await?;
     let state = Arc::new(AppState::new(config, pool)?);
+    if state.config.telegram_bot_token.is_some() {
+        let telegram_state = state.clone();
+        tokio::spawn(async move {
+            if let Err(error) = telegram::run(telegram_state).await {
+                tracing::error!(%error, "telegram bot stopped");
+            }
+        });
+    } else {
+        tracing::info!("TELEGRAM_BOT_TOKEN is empty; Telegram bot disabled");
+    }
     let admin_routes = Router::new()
         .route("/", get(admin::dashboard))
         .route("/api/overview", get(admin::overview))

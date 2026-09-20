@@ -49,6 +49,7 @@ services:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in Dokploy}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5-mini}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       MT5_BRIDGE_URL: http://mt5-bridge:8000
       MT5_BRIDGE_API_KEY: ${MT5_BRIDGE_API_KEY:?Set MT5_BRIDGE_API_KEY in Dokploy}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY in Dokploy}
@@ -82,4 +83,3 @@ volumes:
 networks:
   internal:
     driver: bridge
-

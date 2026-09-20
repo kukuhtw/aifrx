@@ -4,6 +4,7 @@ use base64::{engine::general_purpose::STANDARD, Engine};
 #[derive(Clone)]
 pub struct Config {
     pub database_url: String,
+    pub telegram_bot_token: Option<String>,
     pub openai_api_key: Option<String>,
     pub openai_model: String,
     pub mt5_bridge_url: String,
@@ -44,6 +45,9 @@ impl Config {
             .map_err(|_| anyhow::anyhow!("ENCRYPTION_KEY must decode to 32 bytes"))?;
         Ok(Self {
             database_url: std::env::var("DATABASE_URL").context("DATABASE_URL is required")?,
+            telegram_bot_token: std::env::var("TELEGRAM_BOT_TOKEN")
+                .ok()
+                .filter(|v| !v.trim().is_empty()),
             openai_api_key: std::env::var("OPENAI_API_KEY")
                 .ok()
                 .filter(|v| !v.is_empty()),
