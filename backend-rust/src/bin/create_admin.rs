@@ -1,6 +1,6 @@
 //! Standalone bootstrap tool for the first (or any) admin_users row.
-//! Self-contained like hash_admin_password.rs — it does not depend on the
-//! main binary crate, only on shared external crates, so it needs no lib target.
+//! Self-contained — it does not depend on the main binary crate, only on
+//! shared external crates, so it needs no lib target.
 
 use std::io::{self, Write};
 
@@ -81,7 +81,7 @@ async fn main() -> anyhow::Result<()> {
 
     let id: uuid::Uuid = sqlx::query_scalar(
         "INSERT INTO admin_users(username,password_hash,role,totp_secret_encrypted,totp_secret_nonce) \
-         VALUES ($1,$2,$3,$4,$5) RETURNING id",
+         VALUES ($1,$2,$3::admin_role,$4,$5) RETURNING id",
     )
     .bind(&username)
     .bind(&password_hash)

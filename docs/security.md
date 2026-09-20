@@ -15,6 +15,7 @@ Primary threats and mitigations:
 | Live-order accident | Global, runtime-mode, user, account permission and verification gates |
 | Credential disclosure | AEAD encryption, external key, redacted logs and private bridge |
 | Shared MT5 session confusion | Per-account lock; production requires process/terminal isolation |
+| Admin account compromise | Role-based access control (5 least-privilege roles), mandatory TOTP MFA, short-lived cookie sessions with CSRF protection, immutable per-action audit trail — see [admin-dashboard.md](admin-dashboard.md) |
 
 This system is not unhackable. Use secret rotation, least-privilege networking, dependency scanning, encrypted backups, alerting, penetration testing, and legal/compliance review before production.
 

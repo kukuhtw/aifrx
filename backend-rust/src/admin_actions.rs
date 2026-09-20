@@ -323,7 +323,7 @@ pub async fn create_admin_user(
 
     let id: Uuid = sqlx::query_scalar(
         "INSERT INTO admin_users(username,password_hash,role,totp_secret_encrypted,totp_secret_nonce,created_by) \
-         VALUES ($1,$2,$3,$4,$5,$6) RETURNING id",
+         VALUES ($1,$2,$3::admin_role,$4,$5,$6) RETURNING id",
     )
     .bind(username)
     .bind(&password_hash)
@@ -364,7 +364,7 @@ pub async fn change_admin_role(
     if admin_id == identity.admin_user_id {
         return Err(AppError::Validation("cannot change your own role".into()));
     }
-    let changed = sqlx::query("UPDATE admin_users SET role=$2, updated_at=now() WHERE id=$1")
+    let changed = sqlx::query("UPDATE admin_users SET role=$2::admin_role, updated_at=now() WHERE id=$1")
         .bind(admin_id)
         .bind(body.role.as_str())
         .execute(&state.db)

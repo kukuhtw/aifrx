@@ -32,10 +32,6 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 
 [[bin]]
-name = "hash-admin-password"
-path = "src/bin/hash_admin_password.rs"
-
-[[bin]]
 name = "create-admin"
 path = "src/bin/create_admin.rs"
 

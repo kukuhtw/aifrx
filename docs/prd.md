@@ -148,12 +148,12 @@ Full state model, schema, and webhook flow: [Pricing, billing, and payment admin
 
 | ID | Requirement | Acceptance criteria | Status |
 |---|---|---|---|
-| FR-9.1 | Read-only dashboard at `/admin/` showing system health, user/account counts, daily analysis/trade/order counts, subscription and revenue summary, and recent audit events | Matches the feature list in [admin-dashboard.md](admin-dashboard.md) | Implemented |
-| FR-9.2 | HTTP Basic auth with Argon2 password hash; dashboard returns `503` if unconfigured | Missing `ADMIN_PASSWORD_HASH_B64` makes the dashboard inaccessible, not silently open | Implemented |
+| FR-9.1 | Dashboard at `/admin/` showing system health, user/account counts, daily analysis/trade/order counts, subscription and revenue summary, and recent audit events | Matches the feature list in [admin-dashboard.md](admin-dashboard.md) | Implemented |
+| FR-9.2 | Argon2 password hash plus mandatory TOTP MFA, short-lived cookie session, CSRF-protected mutations | Login requires username, password, and a current authenticator code together; a session cannot be created or used without all three | Implemented |
 | FR-9.3 | `GET /admin/api/overview` and `GET /admin/api/users` with subscription-status filtering | Endpoints require authentication; never return plaintext credentials or secrets | Implemented |
-| FR-9.4 | Role-based access control with distinct roles (owner, security operator, ops admin, support agent, read-only auditor) | Each role's allowed/forbidden actions match the matrix in [SaaS, administration, AI, and market data §3.1](saas-administration-ai-and-market-data.md#31-recommended-administrative-roles) | Planned |
-| FR-9.5 | Multi-factor authentication and short-lived sessions for admin access | Required before production commercial launch | Planned |
-| FR-9.6 | Safe billing actions (resend invoice, refresh provider status, scheduled cancellation, provider-backed refund, promotional credit with audit reason) | Every action writes an immutable audit event with operator identity and reason | Planned |
+| FR-9.4 | Role-based access control with distinct roles (owner, security operator, ops admin, support agent, read-only auditor) | Each role's allowed/forbidden actions match the matrix in [SaaS, administration, AI, and market data §3.1](saas-administration-ai-and-market-data.md#31-recommended-administrative-roles) | Implemented |
+| FR-9.5 | Multi-factor authentication and short-lived sessions for admin access | Required before production commercial launch | Implemented |
+| FR-9.6 | Safe billing actions (resend invoice, refresh provider status, scheduled cancellation, provider-backed refund, promotional credit with audit reason) | Every action writes an immutable audit event with operator identity and reason | Partially implemented — cancellation/refund/credit exist as local audit-trailed actions; "resend invoice" and provider-verified refund/status-refresh depend on Phase 3 payment-gateway integration, not yet started |
 | FR-9.7 | Dashboard must never expose plaintext MT5 passwords/API keys, nor provide a "trade as user" or silent live-trading-enable action | Enforced by design; covered by security review before each release | Implemented as a hard constraint |
 
 ### 7.10 Epic: Audit and Observability (→ BR-27, BR-33)
@@ -205,11 +205,11 @@ Planned endpoint groups: account onboarding/connection, positions/history, posit
 
 | Phase | Scope | Depends on |
 |---|---|---|
-| **Phase 0 — Foundation (current state)** | Rust backend, PostgreSQL schema, analysis/trade-intent/confirm/stop endpoints, mock MT5 bridge, encryption utilities, read-only admin dashboard, seeded billing schema | — |
-| **Phase 1 — Telegram product surface** | `/start` onboarding, disclosures, account connection, `/analyze`, `/buy`/`/sell`, confirmation UI, `/positions`, `/history`, `/stoptrading`/`/resumetrading` | Phase 0 |
+| **Phase 0 — Foundation (current state)** | Rust backend, PostgreSQL schema, analysis/trade-intent/confirm/stop endpoints, mock MT5 bridge, encryption utilities, RBAC/MFA admin dashboard with local audit-trailed mutations, seeded billing schema, Telegram MVP | — |
+| **Phase 1 — Telegram product surface** | Account connection, `/positions`, position modify/close, `/risk`, `/settings` beyond the Phase 0 Telegram MVP (`/start`, `/analyze`, `/buy`/`/sell`, confirmation UI, `/history`, `/stoptrading`/`/resumetrading`) | Phase 0 |
 | **Phase 2 — Billing foundation** | Plan catalogue exposure, trial entitlement enforcement, AI-quota metering, `/plans`/`/billing` views | Phase 0 |
 | **Phase 3 — Hosted checkout** | Payment-gateway sandbox integration, signed webhook processing, reconciliation jobs | Phase 2 |
-| **Phase 4 — Admin billing operations** | RBAC + MFA for admin, paid/unpaid views, refund/credit/cancellation actions, reconciliation queue UI | Phase 3, FR-9.4/9.5 |
+| **Phase 4 — Provider-verified admin billing operations** | Paid/unpaid views, resend invoice, provider status refresh, reconciliation queue UI, and upgrading the Phase 0 local refund/credit actions to provider-verified ones | Phase 3 |
 | **Phase 5 — Production MT5 and full risk engine** | Windows worker/terminal isolation per account, broker-derived margin and daily-loss enforcement (FR-5.4/5.5), timeout reconciliation | Phase 1 |
 | **Phase 6 — Commercial hardening** | Recurring billing, self-service billing portal, penetration testing, legal/compliance sign-off per jurisdiction, live-trading enablement | Phases 1–5 |
 

@@ -34,8 +34,6 @@ TELEGRAM_BOT_TOKEN=<token-from-botfather>
 TRADING_MODE=DEMO
 MARKET_DATA_MAX_AGE_SECONDS=30
 RUST_LOG=info
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD_HASH_B64=<base64-encoded-argon2-hash>
 ```
 
 Generate secrets on a trusted machine:
@@ -43,8 +41,10 @@ Generate secrets on a trusted machine:
 ```bash
 openssl rand -base64 32
 openssl rand -hex 32
-cargo run -p ai-forex-backend --bin hash-admin-password
 ```
+
+Admin dashboard accounts are not environment variables — bootstrap the first
+one after the first successful deploy (see step 4).
 
 `POSTGRES_PASSWORD` and the password embedded in `DATABASE_URL` must match. If a
 password contains URL-reserved characters, percent-encode it in `DATABASE_URL`.
@@ -81,9 +81,19 @@ Expected response:
 {"status":"ok","database":"ok","mt5_bridge":"ok"}
 ```
 
-Then check `https://api.example.com/admin/`. It should request HTTP Basic
-authentication. If `ADMIN_PASSWORD_HASH_B64` is empty or invalid, the admin
-dashboard intentionally remains unavailable.
+Then bootstrap the first admin account by exec'ing into the running container:
+
+```bash
+docker compose exec rust-backend create-admin
+```
+
+It prompts for a username, role (use `OWNER` for the first account), and a
+temporary password, then prints a one-time TOTP provisioning secret — add it
+to an authenticator app immediately, it is never shown again. Open
+`https://api.example.com/admin/`; it should show a sign-in form requiring
+that username, password, and a current authenticator code. See
+[admin-dashboard.md](admin-dashboard.md) for the role matrix and mutation
+actions.
 
 ## 5. Operations
 
@@ -96,5 +106,6 @@ dashboard intentionally remains unavailable.
 - Never expose port 5432, port 8000, `.env`, or either internal secret publicly.
 
 The current repository is a mock/demo foundation, not a complete public trading
-product. Telegram, payment processing, production multi-account MT5 isolation,
-MFA, and RBAC remain outside this deployment.
+product. Payment processing and production multi-account MT5 isolation remain
+outside this deployment; admin RBAC and TOTP MFA are implemented (see
+[admin-dashboard.md](admin-dashboard.md)).

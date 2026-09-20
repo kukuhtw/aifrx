@@ -111,24 +111,13 @@ POSTGRES_PASSWORD=<the-password-you-generated>
 DATABASE_URL=postgres://aiforex:<the-same-password>@postgres:5432/aiforex
 ```
 
-**Generating `ADMIN_PASSWORD_HASH_B64`:** the shipped runtime image does **not** include the `hash-admin-password` utility — only the intermediate Docker build stage does (`cargo build` compiles it, but the final `COPY --from=build` step only copies the main server binary). `docker compose run rust-backend hash-admin-password` will fail with `exec: "hash-admin-password": not found`. Use one of these instead:
+**Admin dashboard accounts are not environment variables.** They live in PostgreSQL and are created with the `create-admin` CLI tool, which ships in the runtime image. After the stack is up once (so migrations have run), bootstrap the first `OWNER` account:
 
-- **Simplest:** generate it on any machine with Rust installed (your laptop, a CI runner — it doesn't have to be the VPS) and paste the resulting hash into the VPS's `.env`:
-  ```bash
-  cargo run -p ai-forex-backend --bin hash-admin-password
-  ```
-- **No local Rust, Docker only:** build just the intermediate stage and run the tool from it:
-  ```bash
-  docker build --target build -f backend-rust/Dockerfile -t aifrx-buildstage .
-  docker run --rm -it aifrx-buildstage /app/target/release/hash-admin-password
-  ```
-
-Either way, copy the printed base64 value into `.env`:
-
-```dotenv
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD_HASH_B64=<generated-value>
+```bash
+docker compose exec rust-backend create-admin
 ```
+
+It prompts for a username, role, and temporary password, then prints a one-time TOTP provisioning secret and `otpauth://` URL — add it to an authenticator app immediately, it cannot be retrieved again. See [admin-dashboard.md](admin-dashboard.md) for the role matrix and mutation actions.
 
 ### 5.4 Recommended `docker-compose.yml` production tweaks
 
@@ -257,8 +246,6 @@ LIVE_TRADING_ENABLED=false
 MARKET_DATA_MAX_AGE_SECONDS=30
 RUST_LOG=info
 BIND_ADDR=127.0.0.1:8080
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD_HASH_B64=
 ```
 
 `BIND_ADDR` (default `0.0.0.0:8080`, overridable, per `backend-rust/src/config.rs`) is set to loopback-only here for the same reason as the Docker path's port tweak in §5.4 — the reverse proxy in §7 is what the public actually reaches.
@@ -276,16 +263,16 @@ sudo chmod 640 /etc/aifrx/*.env
 sudo chown -R aifrx:aifrx /opt/aifrx
 ```
 
-### 6.5 Generate the admin password hash
+### 6.5 Bootstrap the first admin
 
-Since Rust is already installed, this is direct here — no Docker workaround needed:
+Admin dashboard accounts are not environment variables — they live in PostgreSQL. The `create-admin` CLI applies pending migrations itself, so it's safe to run before the systemd service in §6.6 has ever started:
 
 ```bash
 cd /opt/aifrx
-cargo run -p ai-forex-backend --bin hash-admin-password
+cargo run -p ai-forex-backend --bin create-admin
 ```
 
-Paste the printed value into `/etc/aifrx/backend.env` as `ADMIN_PASSWORD_HASH_B64`.
+It prompts for a username, role (use `OWNER` for this first account), and a temporary password, then prints a one-time TOTP provisioning secret and `otpauth://` URL — add it to an authenticator app immediately, it cannot be retrieved again. See [admin-dashboard.md](admin-dashboard.md) for the role matrix and mutation actions.
 
 ### 6.6 Create systemd units
 
@@ -488,8 +475,7 @@ Both services log structured JSON (`RUST_LOG`-controlled on the Rust side); pipe
 |---|---|
 | `ENCRYPTION_KEY must decode to 32 bytes` on startup | Value isn't valid base64, or doesn't decode to exactly 32 bytes — regenerate with `openssl rand -base64 32` |
 | `MT5_BRIDGE_API_KEY is required` | Missing from `.env` / `backend.env` |
-| `docker compose run rust-backend hash-admin-password` → `not found` | Expected — the runtime image doesn't ship that binary; use one of the two workarounds in [§5.3](#53-configure-secrets) |
-| Admin dashboard returns `503 Service Unavailable` | `ADMIN_PASSWORD_HASH_B64` is missing or invalid — see [admin-dashboard.md](admin-dashboard.md) |
+| Admin dashboard login rejected | No admin account exists yet, or the username/password/TOTP code don't match — bootstrap or recover with `create-admin` (§5.3/§6.5), see [admin-dashboard.md](admin-dashboard.md) |
 | `/health` returns `"database":"error"` | Postgres unreachable, wrong `DATABASE_URL`, or password mismatch between `DATABASE_URL` and `POSTGRES_PASSWORD` |
 | `/health` returns `"mt5_bridge":"error"` | Bridge not running, wrong `MT5_BRIDGE_URL`, or `MT5_BRIDGE_API_KEY` mismatch between the two services |
 | Backend fails on first start with a migration error | Check `journalctl`/`docker compose logs` for the specific SQL error — migrations are embedded in the binary and run automatically, so a failure here usually means an incompatible Postgres version or a partially-applied prior migration |

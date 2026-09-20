@@ -133,10 +133,10 @@ Each requirement has a stable ID for traceability into the PRD.
 
 | ID | Requirement | Status |
 |---|---|---|
-| BR-24 | Operators must have a read-only administrative view of platform health, user/account counts, trading activity, and billing state | Implemented |
+| BR-24 | Operators must have an administrative view of platform health, user/account counts, trading activity, and billing state | Implemented |
 | BR-25 | The administrative surface must never expose plaintext credentials, API keys, or an unrestricted "trade as user" capability | Implemented |
-| BR-26 | Production administrative access must require role-based access control and multi-factor authentication before commercial launch | Planned |
-| BR-27 | Every sensitive administrative action (suspension, refund, credit, global flag change) must produce an immutable, attributable audit record | Partially implemented (audit logging exists; refund/credit workflows are planned) |
+| BR-26 | Production administrative access must require role-based access control and multi-factor authentication before commercial launch | Implemented (5-role RBAC, mandatory TOTP MFA, short-lived sessions) |
+| BR-27 | Every sensitive administrative action (suspension, refund, credit, global flag change) must produce an immutable, attributable audit record | Implemented for suspension, cancellation, credit, and refund actions (local, audit-trailed — see BR-26 note in [admin-dashboard.md](admin-dashboard.md)); a global-flag-change audit trail is not yet wired up since no such mutation endpoint exists yet |
 
 ### 7.8 Compliance, Legal, and Regulatory
 

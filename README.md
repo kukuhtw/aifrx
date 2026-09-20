@@ -99,7 +99,7 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 - Mock quote and order execution
 - Order and audit persistence
 - Proposed plan, subscription, and invoice schema
-- Protected read-only admin dashboard
+- Admin dashboard with role-based access control (5 roles), mandatory TOTP MFA, short-lived sessions, and auditable mutation actions (suspend, cancellation, credit, refund)
 - Telegram long-polling mock/demo MVP with user-bound confirmation callbacks
 - Rust unit tests and Python syntax validation
 
@@ -111,8 +111,7 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 - Positions, history, close, and SL/TP modification APIs
 - Broker-derived margin, volume-step, daily-loss, and symbol-session checks
 - Payment-gateway checkout and verified webhook ingestion
-- Subscription mutation, refunds, and usage metering
-- Production administrator accounts, MFA, and role-based access control
+- Provider-verified refunds and usage metering (current admin refund/credit actions are local, audit-trailed bookkeeping — see [admin-dashboard.md](docs/admin-dashboard.md))
 - Per-account Windows MT5 worker orchestration
 - End-to-end PostgreSQL, OpenAI, Telegram, and MT5 integration tests
 - Production legal and compliance review
@@ -153,11 +152,14 @@ The kill switch blocks new `BUY` and `SELL` orders while retaining access to ana
 |   |-- admin/index.html             Admin dashboard UI
 |   |-- migrations/
 |   |   |-- 0001_initial.sql         Trading and security schema
-|   |   `-- 0002_billing.sql         Plans, subscriptions, invoices
+|   |   |-- 0002_billing.sql         Plans, subscriptions, invoices
+|   |   `-- 0003_admin_rbac.sql      Admin accounts, sessions, audit, credits
 |   |-- src/
-|   |   |-- admin.rs                 Dashboard API and authentication
+|   |   |-- admin.rs                 Dashboard HTML, overview and users read APIs
+|   |   |-- admin_actions.rs         Admin mutation endpoints (suspend, cancel, credit, refund)
+|   |   |-- admin_auth.rs            Admin login, sessions, RBAC, TOTP MFA
 |   |   |-- ai.rs                    OpenAI integration
-|   |   |-- bin/hash_admin_password.rs
+|   |   |-- bin/create_admin.rs      CLI to bootstrap/recover admin accounts
 |   |   |-- config.rs                Environment configuration
 |   |   |-- crypto.rs                Credential encryption
 |   |   |-- error.rs                 Safe HTTP errors
@@ -167,6 +169,7 @@ The kill switch blocks new `BUY` and `SELL` orders while retaining access to ana
 |   |   |-- risk.rs                  Risk rules
 |   |   |-- routes.rs                Application routes
 |   |   |-- state.rs                 Dependency container
+|   |   |-- telegram.rs              Telegram bot (Teloxide)
 |   |   `-- trading.rs               Confirmation and execution
 |   |-- Cargo.toml
 |   `-- Dockerfile
@@ -216,28 +219,21 @@ MT5_MODE=MOCK
 
 Do not put a real MT5 password into the local mock stack.
 
-### 2. Configure the admin dashboard
-
-```powershell
-cargo run -p ai-forex-backend --bin hash-admin-password
-```
-
-Copy the generated value into `.env`:
-
-```dotenv
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD_HASH_B64=<generated-value>
-```
-
-If the hash is omitted, the dashboard remains unavailable.
-
-### 3. Start the stack
+### 2. Start the stack
 
 ```text
 docker compose up --build
 ```
 
 The backend applies SQLx migrations during startup.
+
+### 3. Bootstrap the first admin
+
+```powershell
+cargo run -p ai-forex-backend --bin create-admin
+```
+
+or, against the running containers: `docker compose exec rust-backend create-admin`. It prompts for a username, role, and temporary password, then prints a one-time TOTP provisioning secret — add it to an authenticator app immediately. See [admin-dashboard.md](docs/admin-dashboard.md).
 
 ### 4. Verify services
 
@@ -246,7 +242,7 @@ GET http://localhost:8080/health
 Admin dashboard: http://localhost:8080/admin/
 ```
 
-The MVP admin console uses HTTP Basic authentication with an Argon2 password hash. Production must use HTTPS, restricted network access, named admin identities, MFA, session controls, and role-based authorization.
+The admin console requires a role-based account, a password, and a TOTP authenticator code — see [admin-dashboard.md](docs/admin-dashboard.md) for the role matrix and mutation actions. Production must still use HTTPS and restricted network access on top of that.
 
 ## Environment Variables
 
@@ -263,9 +259,9 @@ The MVP admin console uses HTTP Basic authentication with an Argon2 password has
 | `LIVE_TRADING_ENABLED` | No | `false` | Global live feature flag |
 | `MARKET_DATA_MAX_AGE_SECONDS` | No | `30` | Maximum accepted quote age |
 | `MT5_MODE` | No | `MOCK` | Bridge mock or native mode |
-| `ADMIN_USERNAME` | No | `admin` | MVP dashboard username |
-| `ADMIN_PASSWORD_HASH_B64` | For dashboard | None | Base64 Argon2 password hash |
 | `RUST_LOG` | No | Environment-dependent | Structured log filter |
+
+Admin dashboard accounts are not configured via environment variables — see [Bootstrap the first admin](#3-bootstrap-the-first-admin) and [admin-dashboard.md](docs/admin-dashboard.md).
 
 Never commit `.env`.
 
@@ -378,7 +374,7 @@ Current tests cover credential encryption, safe demo risk input, live-account re
 
 ## Production Readiness
 
-Before live trading, complete the Telegram identity layer, account credential lifecycle, broker-derived validation, integration tests, payment webhooks, isolated Windows MT5 workers, monitoring, recovery procedures, administrator MFA/RBAC, security review, and applicable privacy, financial, legal, tax, and regulatory review.
+Before live trading, complete the Telegram identity layer, account credential lifecycle, broker-derived validation, integration tests, payment webhooks, isolated Windows MT5 workers, monitoring, recovery procedures, security review, and applicable privacy, financial, legal, tax, and regulatory review.
 
 Keep live trading disabled until every required control has been independently verified.
 
