@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use anyhow::Context;
+use chrono::Utc;
 use rust_decimal::Decimal;
 use sqlx::Row;
 use teloxide::{
@@ -114,7 +115,7 @@ async fn handle_message(bot: Bot, msg: Message, state: Arc<AppState>) -> Handler
             )
             .reply_markup(InlineKeyboardMarkup::new([[InlineKeyboardButton::callback(
                 "CONFIRM RESUME",
-                format!("resume:{user_id}"),
+                format!("resume:{user_id}:{}", Utc::now().timestamp()),
             )]]))
             .await?;
             return Ok(());
@@ -164,7 +165,14 @@ async fn handle_callback(bot: Bot, query: CallbackQuery, state: Arc<AppState>) -
     } else if let Some(raw) = data.strip_prefix("cancel:") {
         cancel_intent(&state, telegram_id, Uuid::parse_str(raw)?).await
     } else if let Some(raw) = data.strip_prefix("resume:") {
-        resume_trading(&state, telegram_id, Uuid::parse_str(raw)?).await
+        let (user, issued_at) = raw.split_once(':').context("invalid resume callback")?;
+        resume_trading(
+            &state,
+            telegram_id,
+            Uuid::parse_str(user)?,
+            issued_at.parse()?,
+        )
+        .await
     } else {
         Ok("Tindakan tidak dikenal.".to_owned())
     };
@@ -334,8 +342,12 @@ async fn cancel_intent(
 
 async fn stop_trading(state: &AppState, telegram_id: i64) -> anyhow::Result<&'static str> {
     let user = user_id(state, telegram_id).await?;
+    let mut tx = state.db.begin().await?;
     sqlx::query("UPDATE risk_profiles SET trading_enabled=false,updated_at=now() WHERE user_id=$1 AND account_id IS NULL")
-        .bind(user).execute(&state.db).await?;
+        .bind(user).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO audit_logs(user_id,event_type,entity_type,entity_id,metadata) VALUES($1,'KILL_SWITCH_ACTIVATED','user',$1,'{}')")
+        .bind(user).execute(&mut *tx).await?;
+    tx.commit().await?;
     Ok("TRADING STOPPED\nOrder BUY dan SELL baru diblokir. Analisis dan riwayat tetap tersedia.")
 }
 
@@ -343,11 +355,18 @@ async fn resume_trading(
     state: &AppState,
     telegram_id: i64,
     callback_user: Uuid,
+    issued_at: i64,
 ) -> anyhow::Result<String> {
     let user = user_id(state, telegram_id).await?;
     anyhow::ensure!(user == callback_user, "Konfirmasi bukan milik user ini");
+    let age = Utc::now().timestamp() - issued_at;
+    anyhow::ensure!((0..=300).contains(&age), "Konfirmasi sudah kedaluwarsa");
+    let mut tx = state.db.begin().await?;
     sqlx::query("UPDATE risk_profiles SET trading_enabled=true,updated_at=now() WHERE user_id=$1 AND account_id IS NULL")
-        .bind(user).execute(&state.db).await?;
+        .bind(user).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO audit_logs(user_id,event_type,entity_type,entity_id,metadata) VALUES($1,'TRADING_RESUMED','user',$1,'{}')")
+        .bind(user).execute(&mut *tx).await?;
+    tx.commit().await?;
     Ok("Trading intent DEMO diaktifkan. Live trading tetap nonaktif dan setiap order masih membutuhkan konfirmasi.".to_owned())
 }
 
@@ -418,4 +437,21 @@ fn friendly_error(error: &anyhow::Error) -> String {
             .unwrap_or_else(|| "Permintaan tidak dapat diproses".to_owned())
     };
     format!("Tidak dapat melanjutkan: {detail}\nTidak ada order baru yang dibuat.")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn validates_supported_market_request() {
+        assert!(validate_symbol_timeframe("EURUSD", "H1").is_ok());
+        assert!(validate_symbol_timeframe("XAUUSD", "M15").is_ok());
+    }
+
+    #[test]
+    fn rejects_unsafe_symbol_or_timeframe() {
+        assert!(validate_symbol_timeframe("EUR/USD", "H1").is_err());
+        assert!(validate_symbol_timeframe("EURUSD", "H2").is_err());
+    }
 }

@@ -64,7 +64,7 @@ Every user-owned resource is scoped by `user_id`; account resources are also sco
 |---|---|
 | Primary backend | Rust, Axum, Tokio |
 | Database | PostgreSQL, SQLx |
-| Telegram interface | Teloxide planned; command behavior is documented |
+| Telegram interface | Teloxide long-polling MVP for mock/demo workflows |
 | AI analysis | OpenAI Responses API with structured JSON output |
 | MT5 adapter | Python, FastAPI, Pydantic, MetaTrader5 |
 | HTTP client | Reqwest |
@@ -100,11 +100,11 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 - Order and audit persistence
 - Proposed plan, subscription, and invoice schema
 - Protected read-only admin dashboard
+- Telegram long-polling mock/demo MVP with user-bound confirmation callbacks
 - Rust unit tests and Python syntax validation
 
 ### Planned or incomplete
 
-- Teloxide Telegram command and callback implementation
 - Full Telegram account onboarding and conversational state persistence beyond the mock-demo MVP
 - MT5 account-addition and credential-management API
 - Full OHLC, indicator, and market-data service
@@ -117,7 +117,9 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 - End-to-end PostgreSQL, OpenAI, Telegram, and MT5 integration tests
 - Production legal and compliance review
 
-The documented Telegram commands describe the target interface and should not be interpreted as already available in the current binary.
+The Telegram command reference distinguishes the implemented mock/demo MVP from
+the broader target interface. Commands for real account connection, positions,
+interactive risk settings, and billing are not yet available.
 
 ## Safety Model
 
@@ -251,7 +253,7 @@ The MVP admin console uses HTTP Basic authentication with an Argon2 password has
 | Variable | Required | Default | Purpose |
 |---|---:|---|---|
 | `DATABASE_URL` | Yes | None | PostgreSQL connection string |
-| `TELEGRAM_BOT_TOKEN` | For Telegram phase | None | Telegram bot credential |
+| `TELEGRAM_BOT_TOKEN` | For Telegram bot | None | BotFather token; empty disables the bot |
 | `OPENAI_API_KEY` | No | Mock analysis | Operator-owned OpenAI credential |
 | `OPENAI_MODEL` | No | `gpt-5-mini` | Structured-analysis model |
 | `MT5_BRIDGE_URL` | No | `http://mt5-bridge:8000` | Private bridge URL |
