@@ -22,6 +22,7 @@ Status markers used below:
 | Security foundations (credential encryption, internal auth, audit log) | ✅ Done |
 | Admin dashboard | ✅ Done for RBAC/MFA/mutations; 🟡 refund/credit are local audit-trailed actions pending real payment-gateway integration |
 | Documentation | ✅ Done for the current foundation; grows as features ship |
+| Public landing page | ✅ Done — `/` explains the application, demo flow, and current limitations |
 | Licensing | ✅ Done |
 | Telegram bot (the actual user-facing product) | 🟡 Partial — MVP works (`/start`, `/analyze`, `/buy`/`/sell` with confirmation, `/history`, `/stoptrading`/`/resumetrading`); account connection, positions, and settings are not built |
 | MT5 account onboarding / connection API | 🟡 Partial — authenticated account submission and encrypted storage; broker verification and activation pending |

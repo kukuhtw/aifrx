@@ -1,20 +1,26 @@
 import asyncio
-from dataclasses import dataclass
+import os
 
-@dataclass
-class AccountWorker:
-    account_id: str
-    lock: asyncio.Lock
 
-class SessionRegistry:
-    """Serializes each account. Production Windows deployment should assign one terminal process per worker."""
+class AccountSession:
+    """One bridge process owns one terminal and one account."""
+
     def __init__(self) -> None:
-        self._guard = asyncio.Lock()
-        self._workers: dict[str, AccountWorker] = {}
+        self.account_id = os.environ.get("MT5_ACCOUNT_ID", "")
+        self.lock = asyncio.Lock()
+        self.login: int | None = None
+        self.server: str | None = None
 
-    async def worker(self, account_id: str) -> AccountWorker:
-        async with self._guard:
-            return self._workers.setdefault(account_id, AccountWorker(account_id, asyncio.Lock()))
+    def require_account(self, account_id: str) -> None:
+        if os.environ.get("MT5_MODE", "MOCK").upper() == "MOCK":
+            return
+        if not self.account_id or account_id != self.account_id:
+            raise ValueError("account is not assigned to this bridge")
 
-registry = SessionRegistry()
+    def require_verified(self) -> tuple[int, str]:
+        if self.login is None or self.server is None:
+            raise RuntimeError("account is not verified in this bridge process")
+        return self.login, self.server
 
+
+session = AccountSession()

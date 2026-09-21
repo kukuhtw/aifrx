@@ -5,6 +5,7 @@ mod ai;
 mod config;
 mod crypto;
 mod error;
+mod landing;
 mod models;
 mod mt5;
 mod risk;
@@ -100,6 +101,7 @@ async fn main() -> anyhow::Result<()> {
         )
         .nest("/api", admin_api_routes);
     let app = Router::new()
+        .route("/", get(landing::page))
         .nest("/admin", admin_routes)
         .route("/health", get(routes::health))
         .route("/api/v1/analyses", post(routes::analyze))

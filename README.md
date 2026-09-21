@@ -81,6 +81,7 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 ### Implemented
 
 - Axum application and health endpoint
+- Public landing page at `/` explaining the demo workflow and current product status
 - PostgreSQL trading and billing migrations
 - Multi-user account ownership validation
 - Structured OpenAI analysis integration
@@ -270,6 +271,7 @@ Never commit `.env`.
 | Method | Path | Current purpose |
 |---|---|---|
 | `GET` | `/health` | Database and MT5 Bridge health |
+| `GET` | `/` | Public application landing page |
 | `POST` | `/api/v1/mt5/accounts` | Submit an encrypted MT5 connection from a Telegram Mini App; account remains unverified and read-only |
 | `POST` | `/api/v1/analyses` | Retrieve and store structured analysis |
 | `POST` | `/api/v1/trade-intents` | Create a non-executing trade intent |
