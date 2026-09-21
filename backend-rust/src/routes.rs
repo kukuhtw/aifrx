@@ -5,12 +5,83 @@ use crate::{
 };
 use axum::{
     extract::{Path, State},
+    http::HeaderMap,
     Json,
 };
 use chrono::Utc;
+use hmac::{Hmac, Mac};
+use serde::Deserialize;
 use serde_json::{json, Value};
+use sha2::Sha256;
 use std::sync::Arc;
 use uuid::Uuid;
+
+#[derive(Deserialize)]
+pub struct AddMt5Account {
+    broker: String,
+    login: String,
+    password: String,
+    server: String,
+    account_type: String,
+}
+
+pub async fn add_mt5_account(
+    State(s): State<Arc<AppState>>,
+    headers: HeaderMap,
+    Json(input): Json<AddMt5Account>,
+) -> Result<Json<Value>, AppError> {
+    let token = s.config.telegram_bot_token.as_deref().ok_or(AppError::Forbidden)?;
+    let init_data = headers.get("x-telegram-init-data").and_then(|v| v.to_str().ok()).ok_or(AppError::Forbidden)?;
+    let telegram_id = verified_telegram_id(token, init_data)?;
+    let broker = input.broker.trim();
+    let server = input.server.trim();
+    let login = input.login.trim();
+    if broker.is_empty() || broker.len() > 120 || server.is_empty() || server.len() > 120
+        || login.is_empty() || login.len() > 30 || !login.bytes().all(|b| b.is_ascii_digit())
+        || input.password.is_empty() || input.password.len() > 256
+        || !matches!(input.account_type.as_str(), "DEMO" | "LIVE")
+    {
+        return Err(AppError::Validation("invalid MT5 account details".into()));
+    }
+    let user_id: Uuid = sqlx::query_scalar("SELECT id FROM users WHERE telegram_user_id=$1 AND status='ACTIVE'")
+        .bind(telegram_id).fetch_optional(&s.db).await?.ok_or(AppError::Forbidden)?;
+    let (ciphertext, nonce) = crate::crypto::encrypt(&s.config.encryption_key, input.password.as_bytes())
+        .map_err(AppError::Internal)?;
+    let id = Uuid::new_v4();
+    let mut tx = s.db.begin().await?;
+    let inserted = sqlx::query("INSERT INTO mt5_accounts(id,user_id,broker_name,server,login,encrypted_password,password_nonce,account_type,permission_mode,is_verified) VALUES($1,$2,$3,$4,$5,$6,$7,$8::account_type,'READ_ONLY',false) ON CONFLICT(user_id,server,login) DO NOTHING")
+        .bind(id).bind(user_id).bind(broker).bind(server).bind(login).bind(ciphertext).bind(nonce)
+        .bind(&input.account_type).execute(&mut *tx).await?;
+    if inserted.rows_affected() == 0 {
+        return Err(AppError::Validation("account already registered".into()));
+    }
+    sqlx::query("INSERT INTO audit_logs(user_id,account_id,event_type,entity_type,entity_id,metadata) VALUES($1,$2,'MT5_ACCOUNT_ADDED','mt5_account',$2,'{}')")
+        .bind(user_id).bind(id).execute(&mut *tx).await?;
+    tx.commit().await?;
+    Ok(Json(json!({"id":id,"broker":broker,"server":server,"account_type":input.account_type,"login_last4":login.chars().rev().take(4).collect::<String>().chars().rev().collect::<String>(),"is_verified":false,"permission_mode":"READ_ONLY"})))
+}
+
+fn verified_telegram_id(token: &str, init_data: &str) -> Result<i64, AppError> {
+    if init_data.len() > 8192 { return Err(AppError::Forbidden); }
+    let mut fields: Vec<(String, String)> = url::form_urlencoded::parse(init_data.as_bytes())
+        .map(|(k,v)| (k.into_owned(),v.into_owned())).collect();
+    let hash_pos = fields.iter().position(|(k,_)| k == "hash").ok_or(AppError::Forbidden)?;
+    let hash = fields.remove(hash_pos).1;
+    if fields.iter().any(|(k,_)| k == "hash") { return Err(AppError::Forbidden); }
+    fields.sort_by(|a,b| a.0.cmp(&b.0));
+    if fields.windows(2).any(|pair| pair[0].0 == pair[1].0) { return Err(AppError::Forbidden); }
+    let data = fields.iter().map(|(k,v)| format!("{k}={v}")).collect::<Vec<_>>().join("\n");
+    let mut secret = Hmac::<Sha256>::new_from_slice(b"WebAppData").map_err(|_| AppError::Forbidden)?;
+    secret.update(token.as_bytes());
+    let mut mac = Hmac::<Sha256>::new_from_slice(&secret.finalize().into_bytes()).map_err(|_| AppError::Forbidden)?;
+    mac.update(data.as_bytes());
+    let signature = hex::decode(hash).map_err(|_| AppError::Forbidden)?;
+    mac.verify_slice(&signature).map_err(|_| AppError::Forbidden)?;
+    let auth_date: i64 = fields.iter().find(|(k,_)| k == "auth_date").and_then(|(_,v)| v.parse().ok()).ok_or(AppError::Forbidden)?;
+    if (Utc::now().timestamp() - auth_date).abs() > 3600 { return Err(AppError::Forbidden); }
+    let user: Value = serde_json::from_str(fields.iter().find(|(k,_)| k == "user").map(|(_,v)| v.as_str()).ok_or(AppError::Forbidden)?).map_err(|_| AppError::Forbidden)?;
+    user.get("id").and_then(Value::as_i64).ok_or(AppError::Forbidden)
+}
 
 pub async fn health(State(s): State<Arc<AppState>>) -> Json<Value> {
     let db = sqlx::query_scalar::<_, i32>("SELECT 1")

@@ -106,7 +106,7 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 ### Planned or incomplete
 
 - Full Telegram account onboarding and conversational state persistence beyond the mock-demo MVP
-- MT5 account-addition and credential-management API
+- MT5 credential verification and management API (account submission is available)
 - Full OHLC, indicator, and market-data service
 - Positions, history, close, and SL/TP modification APIs
 - Broker-derived margin, volume-step, daily-loss, and symbol-session checks
@@ -270,6 +270,7 @@ Never commit `.env`.
 | Method | Path | Current purpose |
 |---|---|---|
 | `GET` | `/health` | Database and MT5 Bridge health |
+| `POST` | `/api/v1/mt5/accounts` | Submit an encrypted MT5 connection from a Telegram Mini App; account remains unverified and read-only |
 | `POST` | `/api/v1/analyses` | Retrieve and store structured analysis |
 | `POST` | `/api/v1/trade-intents` | Create a non-executing trade intent |
 | `POST` | `/api/v1/trade-intents/{id}/confirm` | Revalidate and execute an intent |
@@ -278,7 +279,7 @@ Never commit `.env`.
 | `GET` | `/admin/api/overview` | Platform and billing metrics |
 | `GET` | `/admin/api/users` | User and subscription search |
 
-Current application endpoints accept internal user UUIDs as a foundation. Before public exposure, trusted Telegram middleware must derive identity server-side rather than accepting an arbitrary user identity from the client.
+The MT5 account submission endpoint verifies Telegram Mini App init data and derives the user from it. Other application endpoints still accept internal user UUIDs as a foundation and need trusted identity middleware before public exposure.
 
 See the [API documentation](docs/api.md) for payloads.
 

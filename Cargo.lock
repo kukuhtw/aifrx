@@ -59,6 +59,7 @@ dependencies = [
  "chrono",
  "dotenvy",
  "hex",
+ "hmac 0.12.1",
  "rand 0.8.8",
  "reqwest",
  "rust_decimal",
@@ -74,6 +75,7 @@ dependencies = [
  "tower-http",
  "tracing",
  "tracing-subscriber",
+ "url",
  "uuid",
 ]
 

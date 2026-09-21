@@ -11,4 +11,13 @@ All public deployment traffic should terminate behind authenticated Telegram web
 `POST /api/v1/trading/stop`: `{"user_id":"uuid"}`. Blocks new orders but deliberately does not block position closing.
 
 Errors never contain stack traces, secrets, bridge URLs, or broker credential payloads.
+# MT5 account submission
+
+`POST /api/v1/mt5/accounts` accepts `X-Telegram-Init-Data` containing the Telegram Mini App's raw `initData` string (valid for one hour). The Telegram user must have sent `/start` first. Body:
+
+```json
+{"broker":"Example Broker","login":"12345678","password":"MT5 password","server":"ExampleBroker-Demo","account_type":"DEMO"}
+```
+
+`account_type` must be `DEMO` or `LIVE`. The server derives ownership from the signed Telegram data, encrypts the password, and returns the account ID, broker, server, last four login digits, `is_verified: false`, and `permission_mode: READ_ONLY`. The password is never returned. A duplicate server/login for the same user is rejected. Broker login verification and activation remain pending, so this endpoint cannot enable real MT5 trading.
 
