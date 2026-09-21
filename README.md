@@ -252,6 +252,7 @@ The admin console requires a role-based account, a password, and a TOTP authenti
 |---|---:|---|---|
 | `DATABASE_URL` | Yes | None | PostgreSQL connection string |
 | `TELEGRAM_BOT_TOKEN` | For Telegram bot | None | BotFather token; empty disables the bot |
+| `TELEGRAM_BOT_USERNAME` | No | None | Optional bot username for the admin dashboard's Telegram link |
 | `OPENAI_API_KEY` | No | Mock analysis | Operator-owned OpenAI credential |
 | `OPENAI_MODEL` | No | `gpt-5-mini` | Structured-analysis model |
 | `MT5_BRIDGE_URL` | No | `http://mt5-bridge:8000` | Private bridge URL |

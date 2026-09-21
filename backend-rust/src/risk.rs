@@ -81,6 +81,7 @@ mod tests {
         Config {
             database_url: "x".into(),
             telegram_bot_token: None,
+            telegram_bot_username: None,
             openai_api_key: None,
             openai_model: "x".into(),
             mt5_bridge_url: "x".into(),

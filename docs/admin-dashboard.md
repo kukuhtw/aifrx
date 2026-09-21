@@ -2,7 +2,9 @@
 
 ## Overview
 
-The application includes an operations dashboard at `/admin/`. It gives authorized operators visibility into platform health, users, MT5 accounts, trading activity, subscriptions, invoices, and audit events, plus a small set of auditable mutation actions (suspend/reactivate a user, schedule a subscription cancellation, grant a promotional credit, mark an invoice as refunded).
+The application includes an operations dashboard at `/admin/`. It gives authorized operators visibility into platform health, Telegram bot setup, users, MT5 accounts, trading activity, subscriptions, invoices, and audit events, plus a small set of auditable mutation actions (suspend/reactivate a user, schedule a subscription cancellation, grant a promotional credit, mark an invoice as refunded).
+
+The **Telegram bot setup** panel shows whether `TELEGRAM_BOT_TOKEN` is configured, instructions for creating a bot with @BotFather and starting the demo flow, and a direct `t.me` link when `TELEGRAM_BOT_USERNAME` is also configured. It never exposes the bot token. “Configured” indicates token presence, not a successful Telegram API connection.
 
 The dashboard deliberately does not expose MT5 passwords, API keys, broker credential payloads, or trade-execution controls. No administrative action can place, close, or modify a trade, and no action silently enables live trading for a user.
 

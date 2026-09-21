@@ -5,6 +5,7 @@ use base64::{engine::general_purpose::STANDARD, Engine};
 pub struct Config {
     pub database_url: String,
     pub telegram_bot_token: Option<String>,
+    pub telegram_bot_username: Option<String>,
     pub openai_api_key: Option<String>,
     pub openai_model: String,
     pub mt5_bridge_url: String,
@@ -46,6 +47,10 @@ impl Config {
             telegram_bot_token: std::env::var("TELEGRAM_BOT_TOKEN")
                 .ok()
                 .filter(|v| !v.trim().is_empty()),
+            telegram_bot_username: std::env::var("TELEGRAM_BOT_USERNAME")
+                .ok()
+                .map(|v| v.trim().trim_start_matches('@').to_string())
+                .filter(|v| v.len() >= 5 && v.len() <= 32 && v.chars().all(|c| c.is_ascii_alphanumeric() || c == '_')),
             openai_api_key: std::env::var("OPENAI_API_KEY")
                 .ok()
                 .filter(|v| !v.is_empty()),

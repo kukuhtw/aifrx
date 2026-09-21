@@ -69,6 +69,8 @@ pub struct OverviewResponse {
     database_status: &'static str,
     mt5_bridge_status: &'static str,
     live_trading_enabled: bool,
+    telegram_bot_configured: bool,
+    telegram_bot_username: Option<String>,
     recent_audit: Vec<AuditItem>,
     generated_at: DateTime<Utc>,
 }
@@ -129,6 +131,8 @@ pub async fn overview(
         database_status: "ok",
         mt5_bridge_status: if mt5_bridge_ok { "ok" } else { "degraded" },
         live_trading_enabled: state.config.live_trading_enabled,
+        telegram_bot_configured: state.config.telegram_bot_token.is_some(),
+        telegram_bot_username: state.config.telegram_bot_username.clone(),
         recent_audit,
         generated_at: Utc::now(),
     }))
