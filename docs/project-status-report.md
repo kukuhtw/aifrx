@@ -27,12 +27,12 @@ Status markers used below:
 | Telegram bot (the actual user-facing product) | 🟡 Partial — MVP works (`/start`, `/analyze`, `/buy`/`/sell` with confirmation, `/history`, `/stoptrading`/`/resumetrading`); account connection, positions, and settings are not built |
 | MT5 account onboarding / connection API | 🟡 Partial — authenticated submission, encrypted storage, and bridge-backed verification; activation and account UI pending |
 | Positions, history, close/modify | 🟡 Partial — `/history` (order list) works; open positions and close/modify are not started |
-| Real MT5 connectivity (a live broker account) | ⬜ Not started — requires a Windows host, see [§5](#5-not-started) |
+| Real MT5 connectivity (a broker account) | 🟡 Partial — native login/verification and bound routing coded; Windows VPS and broker testing pending |
 | Payment/billing (checkout, webhooks, reconciliation) | ⬜ Not started — schema only |
 | Automated test coverage | 🟡 Partial — a handful of unit tests, no integration suite |
 | Legal / regulatory / compliance review | ⬜ Not started |
 
-The repository has a working **backend foundation and mock-trading vertical slice** with a Telegram MVP. Users can submit MT5 account details through the new API, but those accounts stay unverified and read-only. Real MT5 connectivity, broker verification, a Telegram account-connection interface, positions/history beyond a basic list, and billing remain outstanding.
+The repository has a working **backend foundation and mock-trading vertical slice** with a Telegram MVP. Users can submit MT5 details, and the backend can verify them through an assigned Windows bridge once that infrastructure exists. Verified accounts remain read-only. Broker testing, a Telegram account-connection interface, positions/history beyond a basic list, and billing remain outstanding.
 
 ## 3. Completed
 
@@ -113,15 +113,15 @@ This is a real but limited safety net — see [§5](#5-not-started) for what's s
 | Telegram bot | `/start`, `/analyze`, `/buy`/`/sell` with confirmation, `/history`, `/stoptrading`/`/resumetrading` all work against the mock stack | No Telegram UI for connecting MT5 accounts and no `/positions`/`/accounts`/`/risk`/`/settings` — see [telegram-command-reference.md](telegram-command-reference.md) for the full target surface |
 | MT5 account onboarding | Signed Telegram Mini App `initData` authenticates submission and verification endpoints; credentials are encrypted, broker login/server/type are checked through a bound Windows bridge, and events are audited | No credential update/disconnect API, account selection/activation, or Telegram Mini App form. Verified accounts remain read-only. |
 | Risk engine | Ownership/permission/lot/slippage/live-gate checks are real | Daily-loss amount/percentage and per-trade-risk-percentage fields exist in the schema but are **not yet wired to authoritative broker equity or deal history** — their presence in the database is not enforcement (explicitly flagged in [risk-controls.md](risk-controls.md)) |
-| Multi-account isolation | A per-account lock exists in the bridge | The bridge doesn't yet route by account to separate terminal processes — one bridge process currently serves whichever single account is logged into its one MT5 terminal (see [windows-vps-deployment.md §5](windows-vps-deployment.md#5-current-code-limitation-one-terminal--one-account)) |
+| Multi-account isolation | Each native bridge is bound to one account UUID and terminal path; Rust has an explicit UUID-to-bridge URL map | Worker provisioning, lifecycle management, and recovery are manual; no Windows multi-account test yet. See [Windows MT5 bridge setup](windows-mt5-bridge-setup.md). |
 
 ## 5. Not Started
 
 - **MT5 activation and account management.** Broker verification code exists but requires a configured Windows terminal and has not been tested against one. Verified accounts remain read-only. `/start` still creates a mock DEMO account. An account-management UI and credential update/disconnect API are pending.
 - **Open positions and position management.** `/history` lists past orders, but there is no endpoint or Telegram command for viewing open positions, and no confirmed close/modify-SL/modify-TP flow.
 - **Full broker-derived risk calculations.** Margin, broker min/max/step volume, symbol trading status, and market-session validation against live MT5 data are not implemented; neither is the daily-loss enforcement noted in §4.
-- **Real MT5 connectivity.** The current stack only runs in `MT5_MODE=MOCK`. Connecting an actual demo or live broker account requires a Windows host for the MT5 terminal and the official `MetaTrader5` Python package — this is a platform constraint, not unfinished code (see [linux-vps-deployment.md](linux-vps-deployment.md) and [windows-vps-deployment.md](windows-vps-deployment.md), which document exactly how to do this when it's time, but it hasn't been executed against a real broker in this repository).
-- **Production multi-account MT5 worker orchestration.** One isolated terminal/worker process per active account, with Rust-side routing from `account_id` to the correct bridge instance — currently just a design requirement, not implemented.
+- **Windows broker integration test.** Native login, account verification, quote, and order code exists, but no Windows VPS and broker demo account are available to exercise it. The verified account remains read-only; order activation is withheld until broker-derived risk controls and integration tests are complete.
+- **Automated multi-account MT5 worker orchestration.** Account-bound processes and Rust URL routing exist, but terminal provisioning, service lifecycle, route registration, and recovery still require manual operations.
 - **Payment gateway integration.** No hosted checkout, no signed-webhook processing, no reconciliation job — only the target database schema exists. Until this lands, the admin dashboard's refund/credit actions (see [§3.7](#37-admin-dashboard)) stay local/operator-attested rather than provider-verified.
 - **End-to-end integration test suite.** Current tests are unit-level only; there is no automated coverage exercising the full analysis → confirm → execute path against a real database, no cross-user isolation test suite, and no Telegram/payment/broker-failure test coverage.
 - **Legal, regulatory, and compliance review.** Required before any commercial or live-money launch, per [BRD §7.8](brd.md#78-compliance-legal-and-regulatory) — not started, and not something engineering work alone can complete.

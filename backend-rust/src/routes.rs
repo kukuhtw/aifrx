@@ -72,6 +72,11 @@ pub async fn verify_mt5_account(
     let row: (Uuid, String, String, String, String, String) = sqlx::query_as(
         "SELECT a.user_id,a.login,a.server,a.encrypted_password,a.password_nonce,a.account_type::text FROM mt5_accounts a JOIN users u ON u.id=a.user_id WHERE a.id=$1 AND a.is_active AND u.telegram_user_id=$2 AND u.status='ACTIVE' AND a.server<>'MOCK'"
     ).bind(account_id).bind(telegram_id).fetch_optional(&s.db).await?.ok_or(AppError::Forbidden)?;
+    let attempts: i64 = sqlx::query_scalar("SELECT count(*) FROM audit_logs WHERE user_id=$1 AND account_id=$2 AND event_type='MT5_VERIFICATION_ATTEMPT' AND created_at > now()-interval '15 minutes'")
+        .bind(row.0).bind(account_id).fetch_one(&s.db).await?;
+    if attempts >= 5 { return Err(AppError::Validation("too many verification attempts; try later".into())); }
+    sqlx::query("INSERT INTO audit_logs(user_id,account_id,event_type,entity_type,entity_id,metadata) VALUES($1,$2,'MT5_VERIFICATION_ATTEMPT','mt5_account',$2,'{}')")
+        .bind(row.0).bind(account_id).execute(&s.db).await?;
     let login: i64 = row.1.parse().map_err(|_| AppError::Validation("invalid MT5 login".into()))?;
     let password = crate::crypto::decrypt(&s.config.encryption_key, &row.3, &row.4)
         .map_err(AppError::Internal)?;

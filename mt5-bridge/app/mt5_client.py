@@ -22,7 +22,13 @@ def verify(request: LoginRequest) -> VerifiedAccount:
     if info is None or info.login != request.login or info.server != request.server:
         mt5.shutdown()
         raise RuntimeError("broker account identity mismatch")
-    mode = "DEMO" if info.trade_mode == mt5.ACCOUNT_TRADE_MODE_DEMO else "LIVE"
+    if info.trade_mode == mt5.ACCOUNT_TRADE_MODE_DEMO:
+        mode = "DEMO"
+    elif info.trade_mode == mt5.ACCOUNT_TRADE_MODE_REAL:
+        mode = "LIVE"
+    else:
+        mt5.shutdown()
+        raise RuntimeError("unsupported broker account type")
     return VerifiedAccount(login=info.login, server=info.server, broker=info.company,
                            account_type=mode, balance=Decimal(str(info.balance)),
                            equity=Decimal(str(info.equity)))

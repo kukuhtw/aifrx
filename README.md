@@ -274,6 +274,7 @@ Never commit `.env`.
 | `GET` | `/health` | Database and MT5 Bridge health |
 | `GET` | `/` | Public application landing page |
 | `POST` | `/api/v1/mt5/accounts` | Submit an encrypted MT5 connection from a Telegram Mini App; account remains unverified and read-only |
+| `POST` | `/api/v1/mt5/accounts/{id}/verify` | Verify broker identity through the assigned Windows bridge; account remains read-only |
 | `POST` | `/api/v1/analyses` | Retrieve and store structured analysis |
 | `POST` | `/api/v1/trade-intents` | Create a non-executing trade intent |
 | `POST` | `/api/v1/trade-intents/{id}/confirm` | Revalidate and execute an intent |
