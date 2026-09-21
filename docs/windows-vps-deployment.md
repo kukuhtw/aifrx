@@ -1,5 +1,7 @@
 # Deploying the MT5 Bridge to a Windows VPS
 
+> **Code update (21 September 2026):** Native bridge processes now bind to `MT5_ACCOUNT_ID`, use `MT5_TERMINAL_PATH`, and require an explicit Rust `MT5_BRIDGE_ROUTES` entry and verification call. Use the current [Windows MT5 bridge setup](windows-mt5-bridge-setup.md) for configuration. The older single-account examples below describe the original deployment concept and are superseded by that setup guide.
+
 ## 1. Purpose and Scope
 
 This guide covers the **Windows half** of the hybrid deployment topology already introduced in [Can this run on a Linux VPS instead of Windows? — Option B](linux-vps-deployment.md#42-option-b--hybrid-linux-vps--a-separate-windows-host-recommended-for-real-mt5): a real MT5 terminal and this project's Python MT5 Bridge running on a Windows host, reachable only by the Rust backend running elsewhere (typically a Linux VPS).

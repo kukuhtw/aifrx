@@ -69,8 +69,8 @@ pub async fn verify_mt5_account(
     let token = s.config.telegram_bot_token.as_deref().ok_or(AppError::Forbidden)?;
     let init_data = headers.get("x-telegram-init-data").and_then(|v| v.to_str().ok()).ok_or(AppError::Forbidden)?;
     let telegram_id = verified_telegram_id(token, init_data)?;
-    let row: (Uuid, String, String, String, String) = sqlx::query_as(
-        "SELECT a.user_id,a.login,a.server,a.encrypted_password,a.password_nonce FROM mt5_accounts a JOIN users u ON u.id=a.user_id WHERE a.id=$1 AND a.is_active AND u.telegram_user_id=$2 AND u.status='ACTIVE' AND a.server<>'MOCK'"
+    let row: (Uuid, String, String, String, String, String) = sqlx::query_as(
+        "SELECT a.user_id,a.login,a.server,a.encrypted_password,a.password_nonce,a.account_type::text FROM mt5_accounts a JOIN users u ON u.id=a.user_id WHERE a.id=$1 AND a.is_active AND u.telegram_user_id=$2 AND u.status='ACTIVE' AND a.server<>'MOCK'"
     ).bind(account_id).bind(telegram_id).fetch_optional(&s.db).await?.ok_or(AppError::Forbidden)?;
     let login: i64 = row.1.parse().map_err(|_| AppError::Validation("invalid MT5 login".into()))?;
     let password = crate::crypto::decrypt(&s.config.encryption_key, &row.3, &row.4)
@@ -80,7 +80,7 @@ pub async fn verify_mt5_account(
     let actual_type = result.get("account_type").and_then(Value::as_str).ok_or(AppError::Unavailable)?;
     let actual_login = result.get("login").and_then(Value::as_i64).ok_or(AppError::Unavailable)?;
     let actual_server = result.get("server").and_then(Value::as_str).ok_or(AppError::Unavailable)?;
-    if actual_login != login || actual_server != row.2 || !matches!(actual_type, "DEMO" | "LIVE") {
+    if actual_login != login || actual_server != row.2 || actual_type != row.5 {
         return Err(AppError::Validation("broker account identity mismatch".into()));
     }
     let broker = result.get("broker").and_then(Value::as_str).unwrap_or("MT5 broker");

@@ -19,5 +19,6 @@ Errors never contain stack traces, secrets, bridge URLs, or broker credential pa
 {"broker":"Example Broker","login":"12345678","password":"MT5 password","server":"ExampleBroker-Demo","account_type":"DEMO"}
 ```
 
-`account_type` must be `DEMO` or `LIVE`. The server derives ownership from the signed Telegram data, encrypts the password, and returns the account ID, broker, server, last four login digits, `is_verified: false`, and `permission_mode: READ_ONLY`. The password is never returned. A duplicate server/login for the same user is rejected. Broker login verification and activation remain pending, so this endpoint cannot enable real MT5 trading.
+`account_type` must be `DEMO` or `LIVE`. The server derives ownership from the signed Telegram data, encrypts the password, and returns the account ID, broker, server, last four login digits, `is_verified: false`, and `permission_mode: READ_ONLY`. The password is never returned. A duplicate server/login for the same user is rejected.
 
+`POST /api/v1/mt5/accounts/{id}/verify` uses the same `X-Telegram-Init-Data` header and no body. The account must belong to that Telegram user. Rust decrypts its password and sends it only to the assigned private Windows bridge. The bridge logs in to the bound MT5 terminal and returns broker-derived identity. If login and server match, Rust marks the account verified, updates the broker and account type from MT5, and leaves permissions `READ_ONLY`. A Windows bridge route must be configured before calling this endpoint. Verification does not enable order execution.

@@ -96,6 +96,7 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 - Trading kill switch
 - AES-256-GCM credential encryption utility
 - Private-key authenticated MT5 Bridge
+- Account-bound Windows MT5 bridge verification and per-account bridge URL routing (requires VPS setup)
 - Per-account bridge locking
 - Mock quote and order execution
 - Order and audit persistence
@@ -107,13 +108,13 @@ This repository is a compiled backend foundation and mock/demo vertical slice. I
 ### Planned or incomplete
 
 - Full Telegram account onboarding and conversational state persistence beyond the mock-demo MVP
-- MT5 credential verification and management API (account submission is available)
+- MT5 credential lifecycle and account-management UI (submission and Windows bridge verification APIs are available)
 - Full OHLC, indicator, and market-data service
 - Positions, history, close, and SL/TP modification APIs
 - Broker-derived margin, volume-step, daily-loss, and symbol-session checks
 - Payment-gateway checkout and verified webhook ingestion
 - Provider-verified refunds and usage metering (current admin refund/credit actions are local, audit-trailed bookkeeping — see [admin-dashboard.md](docs/admin-dashboard.md))
-- Per-account Windows MT5 worker orchestration
+- Automated per-account Windows MT5 worker provisioning and restart recovery
 - End-to-end PostgreSQL, OpenAI, Telegram, and MT5 integration tests
 - Production legal and compliance review
 
