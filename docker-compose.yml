@@ -30,4 +30,3 @@ services:
       mt5-bridge: {condition: service_started}
 volumes:
   postgres-data:
-

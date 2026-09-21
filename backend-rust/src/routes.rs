@@ -61,6 +61,39 @@ pub async fn add_mt5_account(
     Ok(Json(json!({"id":id,"broker":broker,"server":server,"account_type":input.account_type,"login_last4":login.chars().rev().take(4).collect::<String>().chars().rev().collect::<String>(),"is_verified":false,"permission_mode":"READ_ONLY"})))
 }
 
+pub async fn verify_mt5_account(
+    State(s): State<Arc<AppState>>,
+    Path(account_id): Path<Uuid>,
+    headers: HeaderMap,
+) -> Result<Json<Value>, AppError> {
+    let token = s.config.telegram_bot_token.as_deref().ok_or(AppError::Forbidden)?;
+    let init_data = headers.get("x-telegram-init-data").and_then(|v| v.to_str().ok()).ok_or(AppError::Forbidden)?;
+    let telegram_id = verified_telegram_id(token, init_data)?;
+    let row: (Uuid, String, String, String, String) = sqlx::query_as(
+        "SELECT a.user_id,a.login,a.server,a.encrypted_password,a.password_nonce FROM mt5_accounts a JOIN users u ON u.id=a.user_id WHERE a.id=$1 AND a.is_active AND u.telegram_user_id=$2 AND u.status='ACTIVE' AND a.server<>'MOCK'"
+    ).bind(account_id).bind(telegram_id).fetch_optional(&s.db).await?.ok_or(AppError::Forbidden)?;
+    let login: i64 = row.1.parse().map_err(|_| AppError::Validation("invalid MT5 login".into()))?;
+    let password = crate::crypto::decrypt(&s.config.encryption_key, &row.3, &row.4)
+        .map_err(AppError::Internal)?;
+    let password = String::from_utf8(password).map_err(|_| AppError::Unavailable)?;
+    let result = s.mt5.verify(account_id, login, &password, &row.2).await?;
+    let actual_type = result.get("account_type").and_then(Value::as_str).ok_or(AppError::Unavailable)?;
+    let actual_login = result.get("login").and_then(Value::as_i64).ok_or(AppError::Unavailable)?;
+    let actual_server = result.get("server").and_then(Value::as_str).ok_or(AppError::Unavailable)?;
+    if actual_login != login || actual_server != row.2 || !matches!(actual_type, "DEMO" | "LIVE") {
+        return Err(AppError::Validation("broker account identity mismatch".into()));
+    }
+    let broker = result.get("broker").and_then(Value::as_str).unwrap_or("MT5 broker");
+    let mut tx = s.db.begin().await?;
+    let changed = sqlx::query("UPDATE mt5_accounts SET broker_name=$1,account_type=$2::account_type,is_verified=true,permission_mode='READ_ONLY',updated_at=now() WHERE id=$3 AND user_id=$4 AND is_active")
+        .bind(broker).bind(actual_type).bind(account_id).bind(row.0).execute(&mut *tx).await?;
+    if changed.rows_affected() == 0 { return Err(AppError::Forbidden); }
+    sqlx::query("INSERT INTO audit_logs(user_id,account_id,event_type,entity_type,entity_id,metadata) VALUES($1,$2,'MT5_ACCOUNT_VERIFIED','mt5_account',$2,'{}')")
+        .bind(row.0).bind(account_id).execute(&mut *tx).await?;
+    tx.commit().await?;
+    Ok(Json(json!({"id":account_id,"broker":broker,"server":actual_server,"account_type":actual_type,"is_verified":true,"permission_mode":"READ_ONLY"})))
+}
+
 fn verified_telegram_id(token: &str, init_data: &str) -> Result<i64, AppError> {
     if init_data.len() > 8192 { return Err(AppError::Forbidden); }
     let mut fields: Vec<(String, String)> = url::form_urlencoded::parse(init_data.as_bytes())

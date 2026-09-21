@@ -9,6 +9,14 @@ class LoginRequest(BaseModel):
     password: str = Field(repr=False)
     server: str
 
+class VerifiedAccount(BaseModel):
+    login: int
+    server: str
+    broker: str
+    account_type: Literal["DEMO", "LIVE"]
+    balance: Decimal
+    equity: Decimal
+
 class OrderRequest(BaseModel):
     trade_intent_id: str
     account_id: str
@@ -29,4 +37,3 @@ class OrderResult(BaseModel):
     ticket: int
     executed_price: Decimal
     status: str
-

@@ -52,7 +52,7 @@ impl Mt5Client {
     fn account_req(&self, account: Uuid, method: reqwest::Method, path: &str) -> Result<reqwest::RequestBuilder, AppError> {
         let base = match self.routes.get(&account) {
             Some(url) => url.as_str(),
-            None if self.allow_mock_default => &self.base,
+            None if self.allow_mock_default && self.routes.is_empty() => &self.base,
             None => return Err(AppError::Unavailable),
         };
         Ok(self.http.request(method, format!("{}{}", base.trim_end_matches('/'), path))

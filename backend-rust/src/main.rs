@@ -106,6 +106,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/health", get(routes::health))
         .route("/api/v1/analyses", post(routes::analyze))
         .route("/api/v1/mt5/accounts", post(routes::add_mt5_account))
+        .route("/api/v1/mt5/accounts/{id}/verify", post(routes::verify_mt5_account))
         .route("/api/v1/trade-intents", post(routes::create_intent))
         .route(
             "/api/v1/trade-intents/{id}/confirm",
