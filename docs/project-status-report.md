@@ -2,7 +2,7 @@
 
 ## 1. Purpose and How to Read This
 
-This is a snapshot — **as of 20 September 2026** — of what actually exists in this repository versus what is still planned. It exists so anyone (the project owner, a contributor, a reviewer) can answer "where do things actually stand?" in a few minutes, without cross-referencing a dozen documents. This update reflects two pieces of work that landed since the previous snapshot (commit `d63446f`, 15 September 2026): the Telegram bot MVP and the admin dashboard's RBAC/MFA/mutation-actions work.
+This is a snapshot — **as of 21 September 2026** — of what actually exists in this repository versus what is still planned. It exists so anyone (the project owner, a contributor, a reviewer) can answer "where do things actually stand?" in a few minutes, without cross-referencing a dozen documents. This update includes the Telegram bot MVP, the admin dashboard's RBAC/MFA/mutation-actions work, and the first MT5 account-submission endpoint.
 
 This report is a **summary view**. For exhaustive, requirement-by-requirement status (with acceptance criteria and BRD traceability), see the [PRD's functional requirements](prd.md#7-functional-requirements) and [release phases](prd.md#11-release-phases) — this document distills those into one readable status page and adds the documentation work this report itself is part of.
 
@@ -24,14 +24,14 @@ Status markers used below:
 | Documentation | ✅ Done for the current foundation; grows as features ship |
 | Licensing | ✅ Done |
 | Telegram bot (the actual user-facing product) | 🟡 Partial — MVP works (`/start`, `/analyze`, `/buy`/`/sell` with confirmation, `/history`, `/stoptrading`/`/resumetrading`); account connection, positions, and settings are not built |
-| MT5 account onboarding / connection API | ⬜ Not started |
+| MT5 account onboarding / connection API | 🟡 Partial — authenticated account submission and encrypted storage; broker verification and activation pending |
 | Positions, history, close/modify | 🟡 Partial — `/history` (order list) works; open positions and close/modify are not started |
 | Real MT5 connectivity (a live broker account) | ⬜ Not started — requires a Windows host, see [§5](#5-not-started) |
 | Payment/billing (checkout, webhooks, reconciliation) | ⬜ Not started — schema only |
 | Automated test coverage | 🟡 Partial — a handful of unit tests, no integration suite |
 | Legal / regulatory / compliance review | ⬜ Not started |
 
-**Bottom line:** the repository is a working **backend foundation and mock-trading vertical slice** with a usable Telegram MVP on top of it — the core safety architecture (human confirmation, risk gates, idempotency, audit trail) is real and functional end-to-end against mock data, and a person can now open the bot in Telegram, run `/analyze`, and confirm a DEMO-mock `/buy`/`/sell` intent. What's still missing before this is a complete product: real MT5 connectivity, an account-connection flow, positions/history beyond a basic list, and billing.
+The repository has a working **backend foundation and mock-trading vertical slice** with a Telegram MVP. Users can submit MT5 account details through the new API, but those accounts stay unverified and read-only. Real MT5 connectivity, broker verification, a Telegram account-connection interface, positions/history beyond a basic list, and billing remain outstanding.
 
 ## 3. Completed
 
@@ -42,6 +42,7 @@ Status markers used below:
 - `POST /api/v1/trade-intents` — creates a non-executing intent; never places an order
 - `POST /api/v1/trade-intents/{id}/confirm` — idempotency-key-protected confirmation that re-fetches price, re-validates ownership/permissions/risk/slippage, then executes
 - `POST /api/v1/trading/stop` — kill switch; blocks new BUY/SELL while leaving analysis and position-closing untouched (closing itself isn't implemented yet — see [§5](#5-not-started))
+- `POST /api/v1/mt5/accounts` — accepts broker, login, password, server, and explicit `DEMO`/`LIVE` type; verifies Telegram Mini App init data, derives the user server-side, encrypts the password, audits creation, and returns only masked login details. New accounts remain unverified and `READ_ONLY`.
 - Market-data freshness validation (`MARKET_DATA_MAX_AGE_SECONDS`)
 - Transactional idempotency (unique hashed key, row locking) preventing duplicate orders
 
@@ -108,14 +109,14 @@ This is a real but limited safety net — see [§5](#5-not-started) for what's s
 | Area | What exists | What's missing |
 |---|---|---|
 | Billing | Database schema (`pricing_plans`, `subscriptions`, `invoices`) seeded with proposed plans; admin dashboard reads billing state and can locally cancel/credit/mark-refund with an audit trail | No `/plans` or checkout flow, no payment-gateway integration, no webhook verification, no usage metering; the admin refund/credit actions are operator-attested bookkeeping, not provider-verified transactions — see [pricing-billing-and-payment-administration.md §17](pricing-billing-and-payment-administration.md#17-implementation-phases) |
-| Telegram bot | `/start`, `/analyze`, `/buy`/`/sell` with confirmation, `/history`, `/stoptrading`/`/resumetrading` all work against the mock stack | No MT5 account onboarding, no `/positions`/`/accounts`/`/risk`/`/settings` — see [telegram-command-reference.md](telegram-command-reference.md) for the full target surface |
-| MT5 account model | Account type (`DEMO`/`LIVE`), permission mode, and encrypted-credential storage are all modeled and enforced | No public endpoint yet for a user to actually submit those details — see [§5](#5-not-started) |
+| Telegram bot | `/start`, `/analyze`, `/buy`/`/sell` with confirmation, `/history`, `/stoptrading`/`/resumetrading` all work against the mock stack | No Telegram UI for connecting MT5 accounts and no `/positions`/`/accounts`/`/risk`/`/settings` — see [telegram-command-reference.md](telegram-command-reference.md) for the full target surface |
+| MT5 account onboarding | Signed Telegram Mini App `initData` authenticates `POST /api/v1/mt5/accounts`; credentials are encrypted, duplicate accounts rejected, and creation audited | No broker login verification, credential lifecycle API, account selection/activation, or Telegram Mini App form. Submitted accounts cannot trade until those gates are implemented. |
 | Risk engine | Ownership/permission/lot/slippage/live-gate checks are real | Daily-loss amount/percentage and per-trade-risk-percentage fields exist in the schema but are **not yet wired to authoritative broker equity or deal history** — their presence in the database is not enforcement (explicitly flagged in [risk-controls.md](risk-controls.md)) |
 | Multi-account isolation | A per-account lock exists in the bridge | The bridge doesn't yet route by account to separate terminal processes — one bridge process currently serves whichever single account is logged into its one MT5 terminal (see [windows-vps-deployment.md §5](windows-vps-deployment.md#5-current-code-limitation-one-terminal--one-account)) |
 
 ## 5. Not Started
 
-- **MT5 account connection / onboarding API.** No endpoint exists for a user to submit broker, login, password, server, and account type and have it verified and stored — the Telegram MVP's `/start` only ever creates a mock DEMO account, never a real one.
+- **MT5 broker verification and activation.** The submission endpoint stores credentials but does not test them against a broker or enable trading. `/start` still creates a mock DEMO account. An account-management UI and credential update/disconnect API are also pending.
 - **Open positions and position management.** `/history` lists past orders, but there is no endpoint or Telegram command for viewing open positions, and no confirmed close/modify-SL/modify-TP flow.
 - **Full broker-derived risk calculations.** Margin, broker min/max/step volume, symbol trading status, and market-session validation against live MT5 data are not implemented; neither is the daily-loss enforcement noted in §4.
 - **Real MT5 connectivity.** The current stack only runs in `MT5_MODE=MOCK`. Connecting an actual demo or live broker account requires a Windows host for the MT5 terminal and the official `MetaTrader5` Python package — this is a platform constraint, not unfinished code (see [linux-vps-deployment.md](linux-vps-deployment.md) and [windows-vps-deployment.md](windows-vps-deployment.md), which document exactly how to do this when it's time, but it hasn't been executed against a real broker in this repository).
@@ -138,7 +139,7 @@ Everything else in §5 is ordinary engineering backlog and can proceed independe
 
 In rough dependency order (mirrors [PRD §11](prd.md#11-release-phases)):
 
-1. **MT5 account onboarding + positions/close** — the biggest remaining gap in the user journey the Telegram MVP already exposes: right now `/start` only ever creates a mock account, and there's no way to view or close a real position.
+1. **MT5 verification, account UI, and positions/close** — connect submitted accounts to isolated MT5 workers, verify broker identity, then add account selection and position management. `/start` still creates a mock account, and there is no way to view or close a real position.
 2. **Billing foundation and hosted checkout** — needed before any commercial launch, independent of MT5/Telegram work.
 3. **Provider-verified admin billing operations** — upgrades the current local refund/credit actions once a payment gateway exists.
 4. **Production MT5 worker isolation** — needed before more than one real account can be supported safely.
